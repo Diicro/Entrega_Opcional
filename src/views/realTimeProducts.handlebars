@@ -1,0 +1,41 @@
+<div>
+  <h2>Productos</h2>
+  <div id="newUl">
+    <ul id="deleteUl">
+      {{#each products}}
+        <li>
+          id:
+          {{id}}
+          title:
+          {{title}}
+          description:
+          {{description}}
+          price:
+          {{price}}
+          thumbnail:
+          {{thumbnail}}
+          code:
+          {{code}}
+          stock:
+          {{stock}}
+          status:
+          {{status}}
+          category:
+          {{category}}
+        </li>
+
+      {{/each}}</ul></div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socketClient=io(); socketClient.on("upGradeProducts",data=>{
+  console.log(data) ;const productList=document.getElementById("deleteUl");
+  while(productList.firstChild) {
+  productList.removeChild(productList.firstChild); };
+  for(i=0;i<data.length;i++){ const newli = document.createElement('li');
+  newli.textContent = `id: ${data[i].id} title: ${data[i].title} description:
+  ${data[i].description} price: ${data[i].price} thumbnail: ${data[i].thumbnail}
+  code: ${data[i].code} stock: ${data[i].stock} status: ${data[i].status}
+  category: ${data[i].category})`; productList.appendChild(newli);} ;})
+
+</script>

@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.css">
+
+<h1>CODERChat</h1>
+
+<div>
+    <input type="text" id="chatInput" placeholder="Ingresar mensaje" style="width: 300px;">
+    <br /><br />
+    <button id="submit">Enviar</button>
+</div>
+
+<div>
+    <p id="Chat"></p>
+</div>
+
+ <script src="/socket.io/socket.io.js"></script> 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.all.min.js"></script>
+
+<script type="module">
+
+    const socketClient = io();
+    const chatInput = document.getElementById('chatInput');
+    const Chat = document.getElementById('Chat');
+    const submit = document.getElementById('submit');
+    let user;
+
+    socketClient.on('newClientConnected', data => {
+        console.log(data);
+    });
+
+    socketClient.on('chatLog', data => {
+        for (let i = 0; i < data.length; i++) {
+            Chat.innerHTML += `<br />-${data[i].user}-: ${data[i].message}`;
+        }
+    });
+
+    socketClient.on('messageArrived', data => {
+        Chat.innerHTML += `<br />-${data.user}-: ${data.message}`;
+    });
+
+    const sendMessage = () => {
+        if (chatInput.value !== '') {
+            socketClient.emit('newMessage', { user: user, message: chatInput.value });
+            chatInput.value = '';
+        }
+    }
+
+    const askForUser = async () => {
+        const result = await Swal.fire({
+            title: 'Coderhouse',
+            input: 'text',
+            text: 'Usuario',
+            inputValidator: value => { return !value && 'Se debe indicar usuario' },
+            allowOutsideClick: false
+        });
+
+        user = result.value;
+    }
+
+    chatInput.addEventListener('keyup', (evt) => {
+        if (evt.key === 'Enter') sendMessage()
+    });
+
+    submit.addEventListener('click', (evt) => {
+        sendMessage();
+    });
+
+
+
+    await askForUser();
+</script>
