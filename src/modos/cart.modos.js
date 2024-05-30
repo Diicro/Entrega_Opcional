@@ -1,4 +1,4 @@
-import fs, { cpSync } from "fs";
+import fs from "fs";
 import path from "path";
 import config from "../config.js";
 import cartModel from "../dao/models/cart.model.js"
@@ -88,5 +88,57 @@ export const cartModos = {
       res.status(400).send("El carrito que buscas no existe");
     }
   },
+  deleteProducts:async(req,res)=>{
+    const cid=+req.params.cid
+    const clearArray={
+      id:cid,
+      products:[]
+    }
+    const newCart= await cartModel.findOneAndUpdate({id:cid},clearArray);
+    carts[cid]=newCart
+
+    res.status(200).send(`Lo productos del carrito ${cid} esta vacios`)
+
+  },
+  deleteProduct:async(req,res)=>{
+    const cid =+req.params.cid
+    const pid=+req.params.pid
+    const cart=await cartModel.findOne({id:cid}).lean()
+    const productdelete=[...cart.products]
+    const deleteProduct=productdelete.filter((product)=> product.product !== pid);
+    const newCart=await cartModel.findOneAndUpdate({id:cid},{products:deleteProduct},{new:true})
+    carts[cid]=newCart
+    fs.writeFileSync(upath,JSON.stringify(carts));
+
+    res.status(200).send(`Se quito el producto ${newCart} del carrito ${cid}`)
+  },
+  addQuantity:async(req,res)=>{
+    const cid =+req.params.cid
+    const pid=+req.params.pid
+    const qty=+req.params.qty
+    const cart=await cartModel.findOne({id:cid}).lean()
+    if(cart){
+    const productadd=[...cart.products]
+    const addToProduct=productadd.filter((element)=>element.product === pid)
+    const deleteProduct=productadd.filter((product)=> product.product !== pid);
+       if(addToProduct){
+         const product={
+         product:pid,
+         quantity:addToProduct[0].quantity + qty
+        }
+    const newproduct=[...deleteProduct,product]
+        const newQuantity=await cartModel.findOneAndUpdate({id:cid},{products:newproduct},{new:true})
+        carts[cid]=newQuantity
+        fs.writeFileSync(upath,JSON.stringify(carts));
+
+          res.status(200).send(`Cantidad del producto ${pid} actualizada`)
+        
+        }else{
+          res.status(500).send("El producto no existe dentro de este carrito")}
+    }else{
+      res.status(500).send(console.error("El carrito no existe"))}
+    
+
+  }
   
 };

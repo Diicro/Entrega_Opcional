@@ -1,34 +1,34 @@
 <div>
   <h2>Productos</h2>
   <ul>
-    {{#each products}}
+    {{#each products.docs}}
       <li>
         id:
-        {{id}}
+        {{products.docs.id}}
         <br />
         title:
-        {{title}}
+        {{products.docs.title}}
         <br />
         description:
-        {{description}}
+        {{products.docs.description}}
         <br />
         price:
-        {{price}}
+        {{products.docs.price}}
         <br />
         thumbnail:
-        {{thumbnail}}
+        {{products.docs.thumbnail}}
         <br />
         code:
-        {{code}}
+        {{products.docs.code}}
         <br />
         stock:
-        {{stock}}
+        {{products.docs.stock}}
         <br />
         status:
-        {{status}}
+        {{products.docs.status}}
         <br />
         category:
-        {{category}}
+        {{products.docs.category}}
 
       </li>
       <br />
