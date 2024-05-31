@@ -3,26 +3,23 @@ import config from "../config.js";
 import fs from "fs";
 import path from "path";
 import productsModel from "../dao/models/products.model.js";
-import Handlebars from "handlebars"
+
 
 const routes = Router();
 
 
 
-routes.get("/products/:page", async (req, res) => {
-  const option={
-    limit:3,
-    page:+req.params.page||1,
-    sort:{id:1}}
+routes.get("/products", async (req, res) => {
+  // const option={
+  //   limit:3,
+  //   page:+req.params.page||1,
+  //   sort:{id:1}}
     
-  const products = await productsModel.paginate({},option);
-  
-  
+  // const products = await productsModel.paginate({},option)
+  const products=await productsModel.find({}).sort({id:1}).limit(3).lean();
   const allProducts = { products: products};
-  console.log(products
-
-  )
-  res.render("home",  allProducts);
+  console.log(allProducts)
+  res.render("home", allProducts );
 });
 
 routes.get("/realtimeproducts", async (req, res) => {

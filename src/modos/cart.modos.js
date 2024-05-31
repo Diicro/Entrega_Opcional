@@ -11,7 +11,7 @@ const carts = JSON.parse(fs.readFileSync(upath, "utf-8"));
 
 export const cartModos = {
   getProducts: async(req, res) => {
-    const cart= await cartModel.find().lean();
+    const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();
     res.status(200).send({...cart});
   },
   createCart: async(req, res) => {
@@ -34,11 +34,10 @@ export const cartModos = {
     let product;
     let outProductlocal;
     let outProductDb;
-    const cart = carts.find((element) => element.id === cid);
+    
     const cartDb= await cartModel.findOne({id:cid})
     if (cartDb) {
-      productlocal = cart.products.find((element) => element.product === id);
-      outProductlocal = cart.products.filter((element) => element.product !== id);
+
       product = cartDb.products.find((element) => element.product === id);
       outProductDb = cartDb.products.filter((element) => element.product !== id);
 
@@ -63,7 +62,7 @@ export const cartModos = {
       };
       const filter={id:cid};
       const update={products:[...outProductDb, producInCart]}
-      const newProduct = [...outProductlocal, producInCart];
+      const newProduct = [...outProductDb, producInCart];
       const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true })
 
       carts[cid].products = newProduct;
@@ -142,3 +141,38 @@ export const cartModos = {
   }
   
 };
+export class ProductButtonCart{
+  constructor(){}
+  async addProduct(id){ 
+    let quantity
+    const getcart=await cartModel.find({id:1}).lean()
+    console.log(getcart)
+    const product = cartDb.products.find((element) => element.product === id);
+    const outProductDb = cartDb.products.filter((element) => element.product !== id);
+      if (product) {
+  
+      quantity = product.quantity;
+  
+      return addcart();
+    } else {
+      quantity = 0;
+  
+      return addcart();
+    }
+    async function  addcart () {
+      const producInCart = {
+        product: id,
+        quantity: quantity + 1,
+      };
+      const filter={id:1};
+      const update={products:[...outProductDb, producInCart]}
+      const newProduct = [...outProductlocal, producInCart];
+      const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true })
+  
+      carts[cid].products = newProduct;
+      fs.writeFileSync(upath, JSON.stringify(carts));
+      alert(`Se añadio ${ola}al carrito con exito`);
+    }
+
+  }
+}

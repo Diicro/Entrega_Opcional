@@ -1,36 +1,38 @@
 <div>
   <h2>Productos</h2>
   <ul>
-    {{#each products.docs}}
+    {{#each products }}
       <li>
         id:
-        {{products.docs.id}}
+        {{id}}
         <br />
         title:
-        {{products.docs.title}}
+        {{title}}
         <br />
         description:
-        {{products.docs.description}}
+        {{description}}
         <br />
         price:
-        {{products.docs.price}}
+        {{price}}
         <br />
         thumbnail:
-        {{products.docs.thumbnail}}
+        {{thumbnail}}
         <br />
         code:
-        {{products.docs.code}}
+        {{code}}
         <br />
         stock:
-        {{products.docs.stock}}
+        {{stock}}
         <br />
         status:
-        {{products.docs.status}}
+        {{status}}
         <br />
         category:
-        {{products.docs.category}}
-
+        {{category}}
+        <br>
+        <button id="addToCart" onclick='AddtoCart({{id}})'>Add to cart</button>
       </li>
       <br />
     {{/each}}</ul>
 </div>
+ <script src="../modos/cart.modos.js"></script>
