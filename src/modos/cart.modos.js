@@ -21,8 +21,8 @@ export const cartModos = {
       id: id + 1,
       products: [],
     };
-    carts.push(cart);
-    fs.writeFileSync(upath, JSON.stringify(carts));
+    // carts.push(cart);
+    // fs.writeFileSync(upath, JSON.stringify(carts));
     const newCart= await cartModel.create(cart);
     res.status(200).send(`se creó el  carrito ${newCart}`);
   },
@@ -30,9 +30,7 @@ export const cartModos = {
     const id = +req.params.pid;
     const cid = +req.params.cid;
     let quantity;
-    let productlocal ;
     let product;
-    let outProductlocal;
     let outProductDb;
     
     const cartDb= await cartModel.findOne({id:cid})
@@ -62,11 +60,10 @@ export const cartModos = {
       };
       const filter={id:cid};
       const update={products:[...outProductDb, producInCart]}
-      const newProduct = [...outProductDb, producInCart];
+      // const newProduct = [...outProductDb, producInCart];
       const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true })
-
-      carts[cid].products = newProduct;
-      fs.writeFileSync(upath, JSON.stringify(carts));
+      // carts[cid].products = newProduct;
+      // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);
     }
   },

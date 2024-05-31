@@ -9,16 +9,19 @@ const routes = Router();
 
 
 
-routes.get("/products", async (req, res) => {
-  // const option={
-  //   limit:3,
-  //   page:+req.params.page||1,
-  //   sort:{id:1}}
+routes.get("/products/:page||1", async (req, res) => {
+  const option={
+    limit:3,
+    page:+req.params.page||1,
+    sort:{id:1},
+    lean:true,
+  leanWithId:false}
     
-  // const products = await productsModel.paginate({},option)
-  const products=await productsModel.find({}).sort({id:1}).limit(3).lean();
+  const products = await productsModel.paginate({},option)
   const allProducts = { products: products};
-  console.log(allProducts)
+
+  console.log(products)
+
   res.render("home", allProducts );
 });
 

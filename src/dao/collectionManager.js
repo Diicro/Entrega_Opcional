@@ -78,7 +78,7 @@ try{
         const update = body;
         const options = { new: true };
         const product = {
-          id: id,
+          id: +id,
           title: body.title,
           description: body.description,
           price: body.price,

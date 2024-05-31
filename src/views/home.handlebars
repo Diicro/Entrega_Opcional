@@ -1,7 +1,7 @@
 <div>
   <h2>Productos</h2>
   <ul>
-    {{#each products }}
+    {{#each products.docs }}
       <li>
         id:
         {{id}}
@@ -30,9 +30,29 @@
         category:
         {{category}}
         <br>
-        <button id="addToCart" onclick='AddtoCart({{id}})'>Add to cart</button>
+        <button id="addToCart" onclick="AddToCart('{{id}}')">Add to cart</button>
       </li>
-      <br />
+      
     {{/each}}</ul>
+    <br/>
+      {{#if products.nextPage}}
+      <button><a href="/views/products/{{products.nextPage}}">Siguiente</a></button>
+      {{/if}}
+      {{#if products.prevPage}}
+      <button><a href="/views/products/{{products.prevPage}}">Anterior</a></button>
+      {{/if}}
+
+      <br />
 </div>
- <script src="../modos/cart.modos.js"></script>
+ <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+ <script>     
+  const AddToCart = async (id) => {
+      const cid=2
+        const process = await fetch(`/api/carts/${cid}/product/${id}`, {
+            method: 'POST'
+        }); }
+        </script>
+        
+   
+ 
+   
