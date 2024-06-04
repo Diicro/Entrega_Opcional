@@ -1,24 +1,29 @@
 import { Router } from "express";
 import config from "../config.js";
-import fs from "fs";
-import path from "path";
 import productsModel from "../dao/models/products.model.js";
 
 
 const routes = Router();
 
+const sessionAuth= (req, res, next) => {
+  if (!req.session.user)
 
+      return res.status(401).send({ origin: config.SERVER, payload: 'Inicia sesion' });
 
-routes.get("/products/:page||1", async (req, res) => {
+  next();
+}
+
+routes.get("/products",sessionAuth, async (req, res) => {
   const option={
     limit:3,
-    page:+req.params.page||1,
+    page:+req.query.page||1,
     sort:{id:1},
     lean:true,
   leanWithId:false}
     
   const products = await productsModel.paginate({},option)
-  const allProducts = { products: products};
+  const productsandUser= {...products,...req.session.user}
+  const allProducts = { products: productsandUser};
 
   console.log(products)
 
@@ -35,6 +40,13 @@ routes.get("/realtimeproducts", async (req, res) => {
 
 routes.get("/chat", (req, res) => {
   res.render("chat", {});
+});
+
+routes.get("/register", (req, res) => {
+  res.render("register", {});
+});
+routes.get("/login", (req, res) => {
+  res.render("login", {});
 });
 
 export default routes;

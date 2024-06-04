@@ -1,5 +1,8 @@
 <div>
-  <h2>Productos</h2>
+  <h1>Productos</h1>
+  <h2>Bienvenido {{products.firstName}} {{products.lastName}}</h2>
+  <h3>Estos son los producto de hoy:</h3>
+
   <ul>
     {{#each products.docs }}
       <li>
@@ -36,10 +39,10 @@
     {{/each}}</ul>
     <br/>
       {{#if products.nextPage}}
-      <button><a href="/views/products/{{products.nextPage}}">Siguiente</a></button>
+      <button><a href="/views/products?page={{products.nextPage}}">Siguiente</a></button>
       {{/if}}
       {{#if products.prevPage}}
-      <button><a href="/views/products/{{products.prevPage}}">Anterior</a></button>
+      <button><a href="/views/products?page={{products.prevPage}}">Anterior</a></button>
       {{/if}}
 
       <br />

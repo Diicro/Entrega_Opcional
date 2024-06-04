@@ -1,14 +1,27 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+import session from "express-session";
+import FileStore from "session-file-store"
+
+
+import viewsRoutes from "./routes/views.routes.js";
 import productsRoutes from "./routes/products.routes.js";
 import cartsRoutes from "./routes/cart.routes.js";
-import viewsRoutes from "./routes/views.routes.js";
-import config from "./config.js";
-import mongoose from "mongoose";
+import loginRoutes from "./routes/login_singnin.routes.js"
 import chatModel from "./dao/models/chat.model.js"
+import config from "./config.js";
 
 const app = express();
+const fileStoreage=FileStore(session)
+app.use(session({
+  store:new fileStoreage({path:"./sessions",ttl:90,retries:1}),
+  secret:"secret_code113",
+  resave:true,
+  saveUninitialized:true
+}));
+
 app.engine("handlebars", handlebars.engine());
 app.set("views", `${config.DIRNAME}/views`);
 app.set("view engine", "handlebars");
@@ -18,6 +31,8 @@ app.use(express.json());
 app.use("/views", viewsRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartsRoutes);
+app.use("/api/sessions",loginRoutes)
+
 const httpserver = app.listen(config.PORT, async () => {
   await mongoose.connect(config.MONGODB_URI);
   console.log(`Puerto ${config.PORT} escuchando`);

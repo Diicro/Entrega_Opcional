@@ -15,7 +15,7 @@ class CollectionManager{
 try{
     const filter =category?{category:category}:{};
     const option={
-        limit:limit||10,
+        limit:limit||3,
         page:page||1,
         sort:sort }
     const productsPaginate= await productsModel.paginate(filter,option)
