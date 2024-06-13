@@ -1,9 +1,11 @@
 <div>
     <h2>Login</h2>
-    <form action="/api/sessions/login" method="post">
+    <form action="/api/sessions/pplogin" method="post">
     <div><input type="email" name="email"required="required" placeholder="Email"></div>
     <div><input type="password" name="passWord" required="required" placeholder="constraseña"></div>
     <button type="submit">Ingresar</button>
+    <br /><br />
+            <button class="btn btn-info submit_btn" onclick="window.location.replace('/api/sessions/ghlogin')">Github</button>
     
     <div>Si no tienes usuario registrate <a href="/views/register">aquí</a></div>
     </form>

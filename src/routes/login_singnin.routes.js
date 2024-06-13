@@ -1,41 +1,36 @@
 import { Router } from "express";
 import userModel from "../dao/models/user.model.js"
-
+import bcrypt from "bcrypt"
+import passport from "passport";
+import initAuthStrategy from "../auth/passport.strategies.js";
 
 const routes=Router();
+initAuthStrategy()
 
-routes.post("/register",async(req,res)=>{
-    const {firstName,lastName,email,passWord}=req.body
+routes.post("/register",passport.authenticate("register"),async(req,res)=>{
+    req.session.user=req.user
     try{
-    const userConfirm= await userModel.findOne({email:email}).lean();
-    if(userConfirm){
-            res.status(401).send("Email ya registrado");
-            
-    }
-    const user={
-        firstName:firstName,
-        lastName:lastName,
-        email:email,
-        passWord:passWord
-    }
-    await userModel.create(user);
+    if (req.user==="false"){res.status(400).send({error:"Email ya existe"})}
+        
+    await userModel.create(req.user);
     res.redirect("/views/login");
 }catch(error){
     res.status(500).send(error.message)
 }
 })
 
-routes.post("/login",async (req,res)=>{
-    const {email,passWord}=req.body
+routes.post("/pplogin",passport.authenticate("login"),async (req,res)=>{
+    req.session.user=req.user
     try{
-        const findUser=await userModel.findOne({email:email})
-         if(!findUser){
-            res.status(404).send("Usuario no registrado");
-         }else if (findUser.passWord !== passWord){
-            res.status(401).send("La clave o el usuario no son correctos");
-         }else{
-            req.session.user={firstName:findUser.firstName,lastName:findUser.lastName,rol:findUser.rol}
-            res.redirect("/views/products")
+        
+         if(req.user==="false"){
+            res.status(404).send("Datos no validos")}
+            else{
+            req.session.save(error=>{
+                if (error){return res.status(500).send({payload:null,error:error.message})}
+                res.redirect("/views/products")
+            })
+            
          }
         
         
@@ -43,4 +38,18 @@ routes.post("/login",async (req,res)=>{
     
 
 })
+routes.get("/ghlogin",passport.authenticate("ghlogin",{scope:["user"]}),async(req,res)=>{})
+
+routes.get("/ghlogincallback",passport.authenticate("ghlogin",{failureRedirect:"/login"}),
+async(req,res)=>{
+    try{
+        req.session.user=req.user
+        if(req.user==="false"){
+            res.status(401).send({payload:"Faltan datos de usuario en GitHub"})
+        }req.session.save(error=>{
+            if(error){return res.status(500).send({payload:"Error",error:error.message})}
+            else{res.redirect("/view/products")}
+        })
+
+}catch(error){return done (error,false)}})
 export default routes

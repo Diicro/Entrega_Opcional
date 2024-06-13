@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import session from "express-session";
 import FileStore from "session-file-store"
+import passport from "passport";
 
 
 import viewsRoutes from "./routes/views.routes.js";
@@ -13,6 +14,7 @@ import loginRoutes from "./routes/login_singnin.routes.js"
 import chatModel from "./dao/models/chat.model.js"
 import config from "./config.js";
 
+
 const app = express();
 const fileStoreage=FileStore(session)
 app.use(session({
@@ -21,6 +23,9 @@ app.use(session({
   resave:true,
   saveUninitialized:true
 }));
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", `${config.DIRNAME}/views`);
