@@ -24,7 +24,7 @@ export const cartModos = {
     // carts.push(cart);
     // fs.writeFileSync(upath, JSON.stringify(carts));
     const newCart= await cartModel.create(cart);
-    res.status(200).send(`se creó el  carrito ${newCart}`);
+    return newCart
   },
   addProductToCart: async(req, res) => {
     const id = +req.params.pid;
@@ -61,7 +61,11 @@ export const cartModos = {
       const filter={id:cid};
       const update={products:[...outProductDb, producInCart]}
       // const newProduct = [...outProductDb, producInCart];
-      const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true })
+      const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true }).populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean()
+      const {cart,...restUser}=req.session.user
+      req.session.user={cart:ola,...restUser}
+      console.log(req.session.user.cart.products)
+      req.session.save()
       // carts[cid].products = newProduct;
       // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);

@@ -18,7 +18,7 @@ import config from "./config.js";
 const app = express();
 const fileStoreage=FileStore(session)
 app.use(session({
-  store:new fileStoreage({path:"./sessions",ttl:90,retries:1}),
+  store:new fileStoreage({path:"./sessions",ttl:300,retries:1}),
   secret:"secret_code113",
   resave:true,
   saveUninitialized:true

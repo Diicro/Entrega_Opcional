@@ -29,6 +29,7 @@ routes.post("/pplogin",passport.authenticate("login"),async (req,res)=>{
             req.session.save(error=>{
                 if (error){return res.status(500).send({payload:null,error:error.message})}
                 res.redirect("/views/products")
+                
             })
             
          }
@@ -38,7 +39,7 @@ routes.post("/pplogin",passport.authenticate("login"),async (req,res)=>{
     
 
 })
-routes.get("/ghlogin",passport.authenticate("ghlogin",{scope:["user"]}),async(req,res)=>{})
+routes.get("/ghlogin",passport.authenticate("ghlogin",{scope:["user:email"]}),async(req,res)=>{})
 
 routes.get("/ghlogincallback",passport.authenticate("ghlogin",{failureRedirect:"/login"}),
 async(req,res)=>{
@@ -46,10 +47,10 @@ async(req,res)=>{
         req.session.user=req.user
         if(req.user==="false"){
             res.status(401).send({payload:"Faltan datos de usuario en GitHub"})
-        }req.session.save(error=>{
+        }else{req.session.save(error=>{
             if(error){return res.status(500).send({payload:"Error",error:error.message})}
-            else{res.redirect("/view/products")}
-        })
+            else{res.redirect("/views/products")}
+        })}
 
 }catch(error){return done (error,false)}})
 export default routes

@@ -1,6 +1,9 @@
 <div>
   <h1>Productos</h1>
   <h2>Bienvenido {{products.firstName}} {{products.lastName}}</h2>
+  <h4>productos de tu carrito:{{#each products.cart.products}}<li>{{product.title}}  ${{product.price}} x{{quantity}}</li>{{/each}}<br/>
+  </h4>
+
   <h3>Estos son los producto de hoy:</h3>
 
   <ul>
@@ -33,7 +36,7 @@
         category:
         {{category}}
         <br>
-        <button id="addToCart" onclick="AddToCart('{{id}}')">Add to cart</button>
+        <button id="addToCart" onclick="AddToCart('{{id}}','{{../products.cart.id}}')">Add to cart</button>
       </li>
       
     {{/each}}</ul>
@@ -48,9 +51,9 @@
       <br />
 </div>
  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
- <script>     
-  const AddToCart = async (id) => {
-      const cid=2
+ <script >     
+  const AddToCart = async (id,cid) => {
+
         const process = await fetch(`/api/carts/${cid}/product/${id}`, {
             method: 'POST'
         }); }

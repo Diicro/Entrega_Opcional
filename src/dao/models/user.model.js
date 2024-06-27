@@ -5,8 +5,9 @@ mongoose.pluralize(null);
     firstName:{type:String,required:true},
     lastName:{type:String,required:true},
     email:{type:String,required:true},
-    passWord:{type:String,required:true},
-    rol:{type:String,enum:["admin","user"],default:"user"} 
+    passWord:{type:String},
+    rol:{type:String,enum:["admin","user"],default:"user"},
+    cart:{type:mongoose.Schema.Types.Number,ref:"carts"}
  })
 
  const users=mongoose.model("users",userSchema);

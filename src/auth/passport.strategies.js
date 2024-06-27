@@ -1,10 +1,12 @@
 import passport from "passport";
 import local from "passport-local";
 import userModel from "../dao/models/user.model.js"
+import cartModel from "../dao/models/cart.model.js"
+import { cartModos } from "../modos/cart.modos.js";
 import GitHubStrategy from "passport-github2"
 import config from "../config.js";
 import bcrypt from "bcrypt"
-import { constants } from "fs/promises";
+
 
 const localStategy=local.Strategy;
 
@@ -12,13 +14,18 @@ const initAuthStrategy=()=>{
     passport.use("login",new localStategy({passReqToCallback:true,usernameField:"email",passwordField:"passWord"},
         async (req,username,password,done)=>{
             try{
-                const findUser= await userModel.findOne({email:username});
+                const findUser= await userModel.findOne({email:username}).lean();
                 if(!findUser){
                     return done(null,"false")
                   }else if( bcrypt.compareSync(password,findUser.passWord)){
-                    const {password,...restUser}=findUser;
-                    console.log(restUser)
-                    return done(null,restUser);
+                    const {passWord,...restUser}=findUser;
+                    const newCart= await cartModos.createCart() 
+                    const userWithCart={cart:newCart,...restUser}
+                    
+                  
+                    return done(null,userWithCart)
+                    
+                    
 
                  }else{return done(null,"false")}
             }catch(error){
@@ -50,7 +57,8 @@ const initAuthStrategy=()=>{
         callbackURL: config.GITHUB_CALLBACK_URI},
         async(req, accessToken, refreshToken, profile, done)=>{
         try{
-            const email = profile._json?.email || null;
+            const email = profile._json.email;
+            console.log(email)
             if (email){
                 const findUser=await userModel.findOne({email:email})
                 if (!findUser){
@@ -58,12 +66,12 @@ const initAuthStrategy=()=>{
                         firstName: profile._json.name.split(' ')[0],
                         lastName: profile._json.name.split(' ')[1],
                         email: email,
-                        password: 'none'}
+                        password: "none"}
                         const profilesucces= await userModel.create(user);
 
                         return done(null,profilesucces)
-                }
-                else{return done(null,findUser)}
+                }else{return done(null,findUser)}
+                
             }   else{return done (null,"false")}
 
         }catch(error){return done(error,false)}

@@ -22,10 +22,9 @@ routes.get("/products",sessionAuth, async (req, res) => {
   leanWithId:false}
     
   const products = await productsModel.paginate({},option)
-  const productsandUser= {...products,...req.session.user._doc}
+  const productsandUser= {...products,...req.session.user}
   const allProducts = { products: productsandUser};
-
-  console.log(products)
+  console.log(req.session.user.cart.products)
 
   res.render("home", allProducts );
 });
