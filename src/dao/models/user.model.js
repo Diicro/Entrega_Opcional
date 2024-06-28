@@ -7,7 +7,7 @@ mongoose.pluralize(null);
     email:{type:String,required:true},
     passWord:{type:String},
     rol:{type:String,enum:["admin","user"],default:"user"},
-    cart:{type:mongoose.Schema.Types.Number,ref:"carts"}
+    cart:{type:mongoose.Schema.Types.Object}
  })
 
  const users=mongoose.model("users",userSchema);

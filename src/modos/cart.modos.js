@@ -3,6 +3,7 @@ import path from "path";
 import config from "../config.js";
 import cartModel from "../dao/models/cart.model.js"
 import productsModel from "../dao/models/products.model.js"
+import userModel  from "../dao/models/user.model.js"
 
 const upath = path.join(config.DIRNAME, "../src/dao/cart.json");
 const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
@@ -64,8 +65,11 @@ export const cartModos = {
       const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true }).populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean()
       const {cart,...restUser}=req.session.user
       req.session.user={cart:ola,...restUser}
-      console.log(req.session.user.cart.products)
-      req.session.save()
+      
+      req.session.save(async()=>{
+        const cartUserUpdate= await userModel.findOneAndUpdate({email:req.session.user.email},{cart:ola},{new:true})
+        console.log( cartUserUpdate.cart.products)
+      })
       // carts[cid].products = newProduct;
       // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);

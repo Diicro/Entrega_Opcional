@@ -46,6 +46,8 @@ routes.get("/register", (req, res) => {
 });
 routes.get("/login", (req, res) => {
   res.render("login", {});
+
+
 });
 
 export default routes;

@@ -20,6 +20,7 @@ const initAuthStrategy=()=>{
                   }else if( bcrypt.compareSync(password,findUser.passWord)){
                     const {passWord,...restUser}=findUser;
                     const newCart= await cartModos.createCart() 
+                    const carttoUser= await userModel.findOneAndUpdate({email:username},{cart:newCart},{new:true})
                     const userWithCart={cart:newCart,...restUser}
                     
                   
