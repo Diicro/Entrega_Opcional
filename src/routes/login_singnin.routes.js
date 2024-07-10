@@ -2,7 +2,7 @@ import { Router } from "express";
 import userModel from "../dao/models/user.model.js"
 import bcrypt from "bcrypt"
 import passport from "passport";
-import initAuthStrategy from "../auth/passport.strategies.js";
+import initAuthStrategy from "../controller/auth/passport.strategies.js";
 
 const routes=Router();
 initAuthStrategy()

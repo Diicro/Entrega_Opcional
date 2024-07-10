@@ -1,6 +1,6 @@
 import fs from "fs";
-import productsModel from "../dao/models/products.model.js";
-import CollectionManager from "../dao/collectionManager.js";
+import productsModel from "../../dao/models/products.model.js";
+import CollectionManager from "./modos.manager.js";
 
 
 

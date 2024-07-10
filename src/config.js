@@ -1,4 +1,8 @@
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config()
+
 
 const config = {
   PORT: 8080,
@@ -8,9 +12,9 @@ const config = {
   MONGODB_URI:
     "mongodb+srv://diicrowork:M8piPWGCmktHjOzW@cluster0.vbrk7fl.mongodb.net/clasebcknd",
   MONGODB_ID_REGEX: /^[a-fA-F0-9]{24}$/,
-  GITHUB_CLIENT_ID:"Iv23liUTWchMQnsezOxa",
-  GITHUB_CLIENT_SECRET:"80f918805c9759fb75eb4d09a591bb76825cb966",
-  GITHUB_CALLBACK_URI:"http://localhost:8080/api/sessions/ghlogincallback"
+  GITHUB_CLIENT_ID:process.env.GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET:process.env.GITHUB_CLIENT_SECRET,
+  GITHUB_CALLBACK_URI:process.env.GITHUB_CALLBACK_URI
 };
 
 export default config;

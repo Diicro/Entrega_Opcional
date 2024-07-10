@@ -37,7 +37,7 @@ routes.get("/realtimeproducts", async (req, res) => {
   res.render("realTimeProducts", allProducts);
 });
 
-routes.get("/chat", (req, res) => {
+routes.get("/chat",sessionAuth, (req, res) => {
   res.render("chat", {});
 });
 

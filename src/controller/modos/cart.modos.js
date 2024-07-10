@@ -1,15 +1,15 @@
 import fs from "fs";
 import path from "path";
-import config from "../config.js";
-import cartModel from "../dao/models/cart.model.js"
-import productsModel from "../dao/models/products.model.js"
-import userModel  from "../dao/models/user.model.js"
+import config from "../../config.js";
+import cartModel from "../../dao/models/cart.model.js"
+import productsModel from "../../dao/models/products.model.js"
+import userModel  from "../../dao/models/user.model.js"
 
-const upath = path.join(config.DIRNAME, "../src/dao/cart.json");
-const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
+const upath = path.join(config.DIRNAME, "../src/dao/persistencia.local/cart.json");
+// const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
 const carts = JSON.parse(fs.readFileSync(upath, "utf-8"));
 
-
+// casa
 export const cartModos = {
   getProducts: async(req, res) => {
     const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();

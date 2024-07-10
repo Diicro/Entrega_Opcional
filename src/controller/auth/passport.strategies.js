@@ -1,10 +1,10 @@
 import passport from "passport";
 import local from "passport-local";
-import userModel from "../dao/models/user.model.js"
-import cartModel from "../dao/models/cart.model.js"
+import userModel from "../../dao/models/user.model.js"
+import cartModel from "../../dao/models/cart.model.js"
 import { cartModos } from "../modos/cart.modos.js";
 import GitHubStrategy from "passport-github2"
-import config from "../config.js";
+import config from "../../config.js";
 import bcrypt from "bcrypt"
 
 
