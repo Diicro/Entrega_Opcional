@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { productsModos } from "../controller/modos/products.modos.js";
 
+
 const routes = Router();
 
 routes.get("/", productsModos.getProducts);

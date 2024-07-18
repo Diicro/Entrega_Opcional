@@ -42,7 +42,8 @@ const initAuthStrategy=()=>{
                 const findUserOnSistem= await userModel.findOne({email:username})
                 if(findUserOnSistem){
                     return done(error,"false")
-                }else{const user={
+                }else{
+                    const user={
                     firstName:firstName,
                     lastName:lastName,
                     email:username,

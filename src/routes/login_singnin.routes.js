@@ -1,19 +1,13 @@
 import { Router } from "express";
 import userModel from "../dao/models/user.model.js"
-import bcrypt from "bcrypt"
 import passport from "passport";
 import initAuthStrategy from "../controller/auth/passport.strategies.js";
+import { sessionAuth } from "../controller/utils.js";
 
 const routes=Router();
 initAuthStrategy()
 
-const sessionAuth= (req, res, next) => {
-    if (!req.session.user)
-  
-        return res.status(401).send({ origin: config.SERVER, payload: 'Inicia sesion' });
-  
-    next();
-  }
+
 
 routes.post("/register",passport.authenticate("register"),async(req,res)=>{
     req.session.user=req.user
@@ -36,8 +30,7 @@ routes.post("/pplogin",passport.authenticate("login"),async (req,res)=>{
             else{
             req.session.save(async error=>{
                 if (error){return res.status(500).send({payload:null,error:error.message})}
-                const user=await userModel.findOne({email:req.session.user.email}).lean()
-                console.log(user)
+                
                 res.redirect("/views/products")
                 
             })
