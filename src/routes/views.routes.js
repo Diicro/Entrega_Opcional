@@ -39,7 +39,8 @@ routes.get("/realtimeproducts", async (req, res) => {
 });
 
 routes.get("/chat",sessionAuth, (req, res) => {
-  res.render("chat", {});
+  const user={...req.session.user}
+  res.render("chat", {user:user});
 });
 
 routes.get("/register", (req, res) => {

@@ -7,6 +7,15 @@ import { sessionAuth } from "../controller/utils.js";
 const routes=Router();
 initAuthStrategy()
 
+class userDTO{
+    constructor(user){
+        this.firstName=user.firstName;
+        this.lastName=user.lastName;
+        this.email=user.email
+        this.rol=user.rol
+    }
+}
+
 
 
 routes.post("/register",passport.authenticate("register"),async(req,res)=>{
@@ -58,10 +67,8 @@ async(req,res)=>{
 }catch(error){return done (error,false)}})
 routes.get("/current",sessionAuth,async(req,res)=>{
     try{
-        const user= await userModel.findOne({email:req.session.user.email})
-        const userToObject=user.toObject()
-        const userJson=JSON.stringify(userToObject)
-        res.status(201).json({usuario:userJson})
+        const userToObject=new userDTO(req.session.user)
+        res.status(201).send({usuario:userToObject})
     }catch(error){res.status(404).send({error:error.message,payload:"Tenemos problemas con tu usuario intenta mas tarde"})}
 })
 export default routes
