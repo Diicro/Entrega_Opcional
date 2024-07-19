@@ -30,7 +30,7 @@ app.use(passport.session())
 app.engine("handlebars", handlebars.engine());
 app.set("views", `${config.DIRNAME}/views`);
 app.set("view engine", "handlebars");
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended:true}));
 app.use(express.json());
 
 app.use("/views", viewsRoutes);

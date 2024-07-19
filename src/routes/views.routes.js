@@ -1,6 +1,7 @@
 import { Router } from "express";
 import config from "../config.js";
 import productsModel from "../dao/models/products.model.js";
+import { roleAuth } from "../controller/utils.js";
 
 
 const routes = Router();
@@ -46,8 +47,9 @@ routes.get("/register", (req, res) => {
 });
 routes.get("/login", (req, res) => {
   res.render("login", {});
-
-
+})
+routes.get("/admin",sessionAuth,roleAuth("Admin"),(req,res)=>{
+ res.render("admin",{})
 });
 
 export default routes;

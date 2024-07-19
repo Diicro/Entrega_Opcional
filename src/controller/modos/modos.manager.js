@@ -40,7 +40,7 @@ try{fs.writeFileSync(upath, JSON.stringify(productslocal));
       
     }
     
-    update=async(filter,update,options,products)=>{
+    update=async(filter,update,options,products,id)=>{
 try{ 
 
     const updateProduct = await productsModel.findOneAndUpdate(
@@ -48,6 +48,7 @@ try{
         update,
         options
     );
+    console.log(`hola ${updateProduct}`)
     products.splice(id, 1, updateProduct);
     fs.writeFileSync(upath, JSON.stringify(products));
     
