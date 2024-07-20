@@ -4,12 +4,12 @@ import config from "../../config.js";
 import cartModel from "../../dao/models/cart.model.js"
 import productsModel from "../../dao/models/products.model.js"
 import userModel  from "../../dao/models/user.model.js"
+import ticketsModel from "../../dao/models/tickets.model.js"
 
 const upath = path.join(config.DIRNAME, "../src/dao/persistencia.local/cart.json");
 // const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
 const carts = JSON.parse(fs.readFileSync(upath, "utf-8"));
 
-// casa
 export const cartModos = {
   getProducts: async(req, res) => {
     const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();
@@ -143,41 +143,61 @@ export const cartModos = {
       res.status(500).send(console.error("El carrito no existe"))}
     
 
-  }
-  
-};
-export class ProductButtonCart{
-  constructor(){}
-  async addProduct(id){ 
-    let quantity
-    const getcart=await cartModel.find({id:1}).lean()
-    console.log(getcart)
-    const product = cartDb.products.find((element) => element.product === id);
-    const outProductDb = cartDb.products.filter((element) => element.product !== id);
-      if (product) {
-  
-      quantity = product.quantity;
-  
-      return addcart();
-    } else {
-      quantity = 0;
-  
-      return addcart();
-    }
-    async function  addcart () {
-      const producInCart = {
-        product: id,
-        quantity: quantity + 1,
-      };
-      const filter={id:1};
-      const update={products:[...outProductDb, producInCart]}
-      const newProduct = [...outProductlocal, producInCart];
-      const ola=await cartModel.findOneAndUpdate(filter,update,{ new: true })
-  
-      carts[cid].products = newProduct;
-      fs.writeFileSync(upath, JSON.stringify(carts));
-      alert(`Se añadio ${ola}al carrito con exito`);
-    }
+  },
+  addTicket:async(req,res)=>{
+    try{ 
+      let priceTotal=0
 
+      const cart=req.session.user.cart
+      for (const element of cart.products) {
+        let excesiveQuantity;
+        const productsDb = await productsModel.findOne({ id: element.product.id });
+
+        if (element.quantity > productsDb.stock) {
+            excesiveQuantity = +(element.quantity - productsDb.stock);
+            console.log("paso por aqui");
+
+            await productsModel.findOneAndUpdate({ id: element.product.id }, { stock: 0 }, { new: true });
+
+            const cartUser = await cartModel.findOne({ id: req.params.cid });
+            const cartFilter = cartUser.products.filter(elem => elem.product !== element.product.id);
+            const update = { products: [...cartFilter, { product: element.product.id, quantity: excesiveQuantity }] };
+            const cartUpdate = await cartModel.findOneAndUpdate({ id: req.params.cid }, update, { new: true }).populate({ path: 'products.product', model: productsModel, select: '-_id', match: { id: { $exists: true } }, foreignField: 'id', localField: 'products.product' }).lean();
+
+            const { cart, ...resUser } = req.session.user;
+            req.session.user = { cart:cartUpdate, ...resUser };
+            await req.session.save();
+            await userModel.findOneAndUpdate({ email: req.session.user.email },{ cart: cartUpdate }, { new: true });
+        }else {
+            excesiveQuantity = false;
+            console.log("paso por aqui x2");
+
+            await productsModel.findOneAndUpdate({id: element.product.id }, { stock: productsDb.stock - element.quantity }, { new: true });
+
+            const cartUser = await cartModel.findOne({ id: req.params.cid }).lean();
+            const cartFilter = cartUser.products.filter(elem => elem.product !== element.product.id);
+            const cartUpdate = await cartModel.findOneAndUpdate({ id: req.params.cid }, { products: cartFilter }, { new: true }).populate({ path: 'products.product', model: productsModel, select: '-_id', match: { id: { $exists: true } }, foreignField: 'id', localField: 'products.product' }).lean();
+
+            const {cart, ...resUser } = req.session.user;
+            req.session.user = { cart: cartUpdate, ...resUser };
+            await req.session.save();
+            await userModel.findOneAndUpdate({ email: req.session.user.email }, { cart: cartUpdate }, { new: true });
+        }
+
+        const priceProduct = (excesiveQuantity === false) ? (element.quantity * element.product.price) : ((element.quantity - excesiveQuantity) * element.product.price);
+
+        priceTotal = priceTotal + priceProduct;
+    }
+      
+      const ticket={
+        code: Math.floor(Math.random()*1000000),
+        amount:priceTotal,
+        purchaser:req.session.user.email
+      }
+
+     await ticketsModel.create(ticket);
+     
+
+    }catch(error){res.status(500).send({error:error.message})}
   }
-}
+};

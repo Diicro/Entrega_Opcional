@@ -1,7 +1,9 @@
 <div>
   <h1>Productos</h1>
   <h2>Bienvenido {{products.firstName}} {{products.lastName}}</h2>
-  <h4>productos de tu carrito:{{#each products.cart.products}}<li>{{product.title}}  ${{product.price}} x{{quantity}}</li>{{/each}}<br/>
+  <h4>Productos de tu carrito:{{#each products.cart.products}}<li>{{product.title}}: ${{product.price}} x{{quantity}}</li>{{/each}}<br/>
+  
+  <button onclick="AddTicket('{{products.cart.id}}')">Generar ticket</button>
   </h4>
 
   <h3>Estos son los producto de hoy:</h3>
@@ -57,6 +59,11 @@
         const process = await fetch(`/api/carts/${cid}/product/${id}`, {
             method: 'POST'
         }); }
+  const AddTicket=async(cid)=>{
+      const fetchTicket=await fetch(`/api/carts/${cid}/purchase`,{
+        method: 'POST'
+      })
+        }
         </script>
         
    

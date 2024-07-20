@@ -25,7 +25,7 @@ routes.get("/products",sessionAuth, async (req, res) => {
   const products = await productsModel.paginate({},option)
   const productsandUser= {...products,...req.session.user}
   const allProducts = { products: productsandUser};
-  console.log(req.session.user.cart.products)
+  
 
   res.render("home", allProducts );
 });
