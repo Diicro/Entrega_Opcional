@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import nodemailer from "nodemailer"
 import config from "../../config.js";
 import cartModel from "../../dao/models/cart.model.js"
 import productsModel from "../../dao/models/products.model.js"
@@ -10,6 +11,14 @@ const upath = path.join(config.DIRNAME, "../src/dao/persistencia.local/cart.json
 // const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
 const carts = JSON.parse(fs.readFileSync(upath, "utf-8"));
 
+const transport=nodemailer.createTransport({
+  service:"gmail",
+  port:587,
+  auth:{
+    user:config.GMAIL_APP_USER,
+    pass:config.GMAIL_APP_PASS
+  }
+})
 export const cartModos = {
   getProducts: async(req, res) => {
     const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();
@@ -68,7 +77,7 @@ export const cartModos = {
       
       req.session.save(async()=>{
         const cartUserUpdate= await userModel.findOneAndUpdate({email:req.session.user.email},{cart:ola},{new:true})
-        console.log( cartUserUpdate.cart.products)
+      
       })
       // carts[cid].products = newProduct;
       // fs.writeFileSync(upath, JSON.stringify(carts));
@@ -195,8 +204,19 @@ export const cartModos = {
         purchaser:req.session.user.email
       }
 
-     await ticketsModel.create(ticket);
-     
+     const createTicket=await ticketsModel.create(ticket);
+    
+      console.log("holaaa")
+        const mailConfirmation=await transport.sendMail({
+          from:`FachaPets <${config.GMAIL_APP_USER}>`,
+          to:ticket.purchaser,
+          subject:"comprobante compra.",
+          html:`<h1>Codigo de ticket:# ${ticket.code}<h1><br/><h1>Precio de la compra:$${ticket.amount}</h1>`
+        })
+        
+
+      res.status(200).send({data:`Email enviado `})
+
 
     }catch(error){res.status(500).send({error:error.message})}
   }

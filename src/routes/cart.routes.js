@@ -10,5 +10,5 @@ routes.post("/:cid/product/:pid",sessionAuth, cartModos.addProductToCart);
 routes.delete("/:cid/products",cartModos.deleteProducts);
 routes.delete("/:cid/products/:pid",cartModos.deleteProduct);
 routes.put("/:cid/products/:pid/:qty",cartModos.addQuantity);
-routes.post("/:cid/purchase",sessionAuth,cartModos.addTicket)
+routes.post("/:cid/purchase",sessionAuth,cartModos.addTicket);
 export default routes;
