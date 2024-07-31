@@ -13,6 +13,8 @@ import cartsRoutes from "./routes/cart.routes.js";
 import loginRoutes from "./routes/login_singnin.routes.js"
 import chatModel from "./dao/models/chat.model.js"
 import config from "./config.js";
+import errorsHandler from "./controller/error.handler.js";
+import addLogger from "./controller/logger.js";
 
 
 const app = express();
@@ -33,10 +35,12 @@ app.set("view engine", "handlebars");
 app.use(express.urlencoded({ extended:true}));
 app.use(express.json());
 
+app.use(addLogger)
 app.use("/views", viewsRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartsRoutes);
 app.use("/api/sessions",loginRoutes)
+app.use(errorsHandler)
 
 const httpserver = app.listen(config.PORT, async () => {
   await mongoose.connect(config.MONGODB_URI);

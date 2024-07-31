@@ -1,5 +1,7 @@
 
 import productsModel from "../../dao/models/products.model.js";
+import CustomError from "../customError.js";
+import { errorDicctionary } from "../errorsDictionary.js";
 import CollectionManager from "./modos.manager.js";
 
 
@@ -37,7 +39,8 @@ export const productsModos = {
     res.status(200).send({products});}
 
     catch(error){
-      res.status(500).send({error:error.message})
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR);
     }
   },
 
@@ -46,7 +49,9 @@ export const productsModos = {
       const id = req.params.pid;
       const objectById = await manager.getId(id);
       res.status(200).send({ ...objectById });
-    }catch(error){res.status(500).send({error:"producto no encontrado"})}
+    }catch(error){
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.ID_NOT_FOUND);}
   },
 
   addProduct: async (req, res) => {
@@ -64,14 +69,15 @@ export const productsModos = {
           (element) => element.code === productNomalized.code);
       
       if (completeSpace) {
-              throw new Error("Todos los campos solicitados" );
+              req.logger.warn("Faltan parametros del producto");
+              throw new CustomError(errorDicctionary.FEW_PARAMETERS);
       } else if (codeExiste) {
-              throw new Error( "El codigo ya existe" );
+              req.logger.info("El codigo ya existe")
+              throw new CustomError(errorDicctionary.CODE_EXIST );
       } else {
 
           const socketServer = req.app.get("socketServer")
-          console.log(productNomalized)
-          console.log(products)
+          req.logger.debug(productNomalized)
           const addProduct=await manager.addProduct(productNomalized)
 
       res.status(200).send(`se agregó correctamente el producto ${addProduct}`)
@@ -82,7 +88,8 @@ export const productsModos = {
       }
       
     catch(error){
-      res.status(500).send(error.message)
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR)
   }
 
   },
@@ -102,14 +109,16 @@ export const productsModos = {
   
       const sameCode = products.some((elemet) => productNormalized.code === elemet.code);
       if (sameCode) {
-        throw new Error( "El codigo ya existe" );
+        req.logger.info("El codigo ya existe")
+        throw new CustomError(errorDicctionary.CODE_EXIST);
       } else {
 
-    const updates= await manager.update(filter,update,options,products,id)
+      const updates= await manager.update(filter,update,options,products,id)
 
-    res.status(200).send(`Actualización de producto: ${updates.title} ha sido exitoso`)}
-  }catch(error)
-  { res.status(500).send(error.message)}  
+      res.status(200).send(`Actualización de producto: ${updates.title} ha sido exitoso`)}
+  }catch(error){ 
+    req.logger.error("Error al acceder a la base datos")
+    throw new CustomError(errorDicctionary.DATABASE_ERROR);}  
   },
   deleteProduct: async (req, res) => {
     try{
@@ -119,17 +128,20 @@ export const productsModos = {
     const upgrateArray = getProducts.filter((element) => element.id !== id);
 
     if (getProducts.length === upgrateArray.length) {
-      throw new Error("Producto no encontrado");
+      req.logger.warn("El producto a eliminar no existe")
+      throw new CustomError(errorDicctionary.ID_NOT_FOUND);
     } else {
 
     const socketServer = req.app.get("socketServer");
     const deleteProduct= await manager.delete(id,upgrateArray)
+    req.logger.info(`Eliminó el producto ${deleteProduct}`)
     res.status(200).send(`Eliminado:${deleteProduct}`)
     
     const products = await productsModel.find({}).lean();
     socketServer.emit("upGradeProducts", products)}
-    }catch(error)
-    {res.status(500).send(error.message)}
+    }catch(error){
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR);}
     
     }
   }

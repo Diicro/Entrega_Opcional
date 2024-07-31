@@ -6,6 +6,8 @@ import cartModel from "../../dao/models/cart.model.js"
 import productsModel from "../../dao/models/products.model.js"
 import userModel  from "../../dao/models/user.model.js"
 import ticketsModel from "../../dao/models/tickets.model.js"
+import { errorDicctionary } from "../errorsDictionary.js";
+import CustomError from "../customError.js";
 
 const upath = path.join(config.DIRNAME, "../src/dao/persistencia.local/cart.json");
 // const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
@@ -21,11 +23,17 @@ const transport=nodemailer.createTransport({
 })
 export const cartModos = {
   getProducts: async(req, res) => {
-    const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();
+    try{const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();
     res.status(200).send({...cart});
+
+  }catch(error){
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   createCart: async(req, res) => {
-    const carttoCreate= await cartModel.find().lean();
+    try{
+      const carttoCreate= await cartModel.find().lean();
     const id = carttoCreate.length - 1;
     const cart = {
       id: id + 1,
@@ -35,8 +43,14 @@ export const cartModos = {
     // fs.writeFileSync(upath, JSON.stringify(carts));
     const newCart= await cartModel.create(cart);
     return newCart
+
+  }catch(error){ 
+    req.logger.error("Error al acceder a la base datos")
+    throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   addProductToCart: async(req, res) => {
+    try{
     const id = +req.params.pid;
     const cid = +req.params.cid;
     let quantity;
@@ -52,7 +66,9 @@ export const cartModos = {
     }
 
     if (!cartDb) {
-      res.status(400).send("No se encontro el carrito");
+      req.logger.warn("Id no encontrado")
+      throw new CustomError(errorDicctionary.ID_NOT_FOUND);
+      
     } else if (product) {
 
       quantity = product.quantity;
@@ -83,8 +99,15 @@ export const cartModos = {
       // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);
     }
+    }catch(error){
+      
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR);
+     }
+   
   },
   productsCartById: async (req, res) => {
+    try{
     const cid = +req.params.cid;
     const cartDb= await cartModel.findOne({id:cid});
     const products = [...cartDb.products];
@@ -95,13 +118,19 @@ export const cartModos = {
       newProducts.push(arrayfor);
     }
     if (cartDb) {
-      console.log(cartDb.products)
+      req.logger.debug(cartDb.products)
       res.status(200).send(newProducts);
     } else {
-      res.status(400).send("El carrito que buscas no existe");
+      req.logger.warn("Id del carro no encontrado")
+      throw new CustomError(errorDicctionary.ID_NOT_FOUND);
     }
+  }catch(error){
+    req.logger.error("Error al acceder a la base datos")
+    throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   deleteProducts:async(req,res)=>{
+    try{
     const cid=+req.params.cid
     const clearArray={
       id:cid,
@@ -112,8 +141,13 @@ export const cartModos = {
 
     res.status(200).send(`Lo productos del carrito ${cid} esta vacios`)
 
+}catch(error){ 
+  req.logger.error("Error al acceder a la base datos")
+  throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   deleteProduct:async(req,res)=>{
+    try{
     const cid =+req.params.cid
     const pid=+req.params.pid
     const cart=await cartModel.findOne({id:cid}).lean()
@@ -124,8 +158,14 @@ export const cartModos = {
     fs.writeFileSync(upath,JSON.stringify(carts));
 
     res.status(200).send(`Se quito el producto ${newCart} del carrito ${cid}`)
+  
+  }catch(error){
+    req.logger.error("Error al acceder a la base datos")
+    throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   addQuantity:async(req,res)=>{
+    try{
     const cid =+req.params.cid
     const pid=+req.params.pid
     const qty=+req.params.qty
@@ -147,11 +187,16 @@ export const cartModos = {
           res.status(200).send(`Cantidad del producto ${pid} actualizada`)
         
         }else{
-          res.status(500).send("El producto no existe dentro de este carrito")}
+          req.logger.warn("Id de producto no encontrado")
+          throw new CustomError(errorDicctionary.ID_NOT_FOUND)}
     }else{
-      res.status(500).send(console.error("El carrito no existe"))}
+      req.logger.warn("Id de carrito no encontrado")
+      throw new  CustomError(errorDicctionary.ID_NOT_FOUND)}
     
-
+}catch(error){ 
+  req.logger.error("Error al acceder a la base datos")
+  throw new CustomError(errorDicctionary.DATABASE_ERROR);}
+    
   },
   addTicket:async(req,res)=>{
     try{ 
@@ -164,7 +209,6 @@ export const cartModos = {
 
         if (element.quantity > productsDb.stock) {
             excesiveQuantity = +(element.quantity - productsDb.stock);
-            console.log("paso por aqui");
 
             await productsModel.findOneAndUpdate({ id: element.product.id }, { stock: 0 }, { new: true });
 
@@ -179,7 +223,6 @@ export const cartModos = {
             await userModel.findOneAndUpdate({ email: req.session.user.email },{ cart: cartUpdate }, { new: true });
         }else {
             excesiveQuantity = false;
-            console.log("paso por aqui x2");
 
             await productsModel.findOneAndUpdate({id: element.product.id }, { stock: productsDb.stock - element.quantity }, { new: true });
 
@@ -206,7 +249,6 @@ export const cartModos = {
 
      const createTicket=await ticketsModel.create(ticket);
     
-      console.log("holaaa")
         const mailConfirmation=await transport.sendMail({
           from:`FachaPets <${config.GMAIL_APP_USER}>`,
           to:ticket.purchaser,
@@ -218,6 +260,8 @@ export const cartModos = {
       res.status(200).send({data:`Email enviado `})
 
 
-    }catch(error){res.status(500).send({error:error.message})}
+    }catch(error){ 
+      req.logger.error("Error al acceder a la base datos")
+      throw new CustomError(errorDicctionary.DATABASE_ERROR)}
   }
 };
