@@ -1,10 +1,39 @@
 import config from "../config.js";
-export const sessionAuth=(req, res, next) => {
-    if (!req.session.user)
-  
-        return res.status(401).send({ origin: config.SERVER, payload: 'Inicia sesion' });
+import nodemailer from "nodemailer"
+import { errorDicctionary } from "./errorsDictionary.js";
+import CustomError from "./customError.js";
+import jwt from "jsonwebtoken"
 
-    next();
+export const createToken=(payload,time)=>jwt.sign(payload,config.SECRET,{expiresIn:time})
+
+
+export const verifyToken=(req,res,next)=>{
+  const token=req.query.token
+
+  if(!token) { 
+    throw new CustomError(errorDicctionary.TOKEN_ERROR)
+
+  }else{
+    jwt.verify(token,config.SECRET,(err,payload)=>{ 
+  if(err){
+    throw new CustomError(errorDicctionary.TOKEN_ERROR)
+
+  }else{console.log(token)
+    req.user=payload
+    console.log(req.user)
+      next()
+      }    
+    })}
+   
+  
+  
+}
+export const sessionAuth=(req, res, next) => {
+    if (!req.session.user){throw new CustomError(errorDicctionary.LOG_OUT)
+     
+    }else{next()}
+
+    
   }
 
   export const roleAuth=(role)=>{return(req,res,next)=>{
@@ -15,3 +44,11 @@ export const sessionAuth=(req, res, next) => {
     }
     next()
   }}
+  export const transport=nodemailer.createTransport({
+    service:"gmail",
+    port:587,
+    auth:{
+      user:config.GMAIL_APP_USER,
+      pass:config.GMAIL_APP_PASS
+    }
+  })

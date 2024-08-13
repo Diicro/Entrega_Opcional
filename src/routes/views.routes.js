@@ -1,8 +1,9 @@
 import { Router } from "express";
 import config from "../config.js";
 import productsModel from "../dao/models/products.model.js";
-import { roleAuth } from "../controller/utils.js";
+import { roleAuth, verifyToken } from "../controller/utils.js";
 import { errorDicctionary } from "../controller/errorsDictionary.js";
+import CustomError from "../controller/customError.js";
 
 
 const routes = Router();
@@ -53,6 +54,13 @@ routes.get("/login", (req, res) => {
 routes.get("/admin",sessionAuth,roleAuth("Admin"),(req,res)=>{
  res.render("admin",{})
 });
+routes.get("/recuperarpassword",(req,res)=>{
+  res.render("recuperarPassword",{})
+})
+routes.get("/cambiocontrasena",verifyToken,(req,res)=>{
+  res.render("cambioContraseña",{})
+})
+
 // routes.all('*', async (req, res) => {throw new CustomError(errorDicctionary.ROUTING_ERROR)});
 
 export default routes;

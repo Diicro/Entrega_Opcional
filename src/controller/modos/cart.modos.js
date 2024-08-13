@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import nodemailer from "nodemailer"
 import config from "../../config.js";
 import cartModel from "../../dao/models/cart.model.js"
 import productsModel from "../../dao/models/products.model.js"
@@ -8,19 +7,13 @@ import userModel  from "../../dao/models/user.model.js"
 import ticketsModel from "../../dao/models/tickets.model.js"
 import { errorDicctionary } from "../errorsDictionary.js";
 import CustomError from "../customError.js";
+import { transport } from "../utils.js";
 
 const upath = path.join(config.DIRNAME, "../src/dao/persistencia.local/cart.json");
 // const upathProducts = path.join(config.DIRNAME, "../src/dao/products.json");
 const carts = JSON.parse(fs.readFileSync(upath, "utf-8"));
 
-const transport=nodemailer.createTransport({
-  service:"gmail",
-  port:587,
-  auth:{
-    user:config.GMAIL_APP_USER,
-    pass:config.GMAIL_APP_PASS
-  }
-})
+
 export const cartModos = {
   getProducts: async(req, res) => {
     try{const cart= await cartModel.find().populate({path:'products.product',model:productsModel,select:'-_id',match:{id:{$exists:true}},foreignField:'id',localField:'products.product'}).lean();

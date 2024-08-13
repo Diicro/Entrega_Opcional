@@ -2,9 +2,12 @@ import { Router } from "express";
 import userModel from "../dao/models/user.model.js"
 import passport from "passport";
 import initAuthStrategy from "../controller/auth/passport.strategies.js";
-import { sessionAuth } from "../controller/utils.js";
+import { sessionAuth,createToken,verifyToken,transport } from "../controller/utils.js";
 import CustomError from "../controller/customError.js";
 import { errorDicctionary } from "../controller/errorsDictionary.js";
+import config from "../config.js";
+import bcrypt from "bcrypt"
+
 
 const routes=Router();
 initAuthStrategy()
@@ -26,6 +29,7 @@ routes.post("/register",passport.authenticate("register"),async(req,res)=>{
     if (req.user==="false"){
         req.logger.error("Email ya existe");
         throw new CustomError(errorDicctionary.EMAIL_EXIST)}
+        
         
     await userModel.create(req.user);
     res.redirect("/views/login");
@@ -73,6 +77,48 @@ async(req,res)=>{
         })}
 
 }catch(error){return done (error,false)}})
+
+routes.post("/verifyemail",async(req,res)=>{
+    const email=req.body.email
+    const user=await userModel.findOne({email:email}).lean()
+    
+    if(!user){        
+          throw new CustomError(errorDicctionary.ID_NOT_FOUND)       
+    }else{
+        
+        const token=createToken({email},"5m")
+        
+        await transport.sendMail({
+            from:`FachaPets <${config.GMAIL_APP_USER}>`,
+            to:email,
+            subject:"Cambio de contraseña",
+            html:`<h1>Restaurar constraseña: http://localhost:8080/views/cambiocontrasena?token=${token}</h1>
+            <div>Si usted no ha sido,ignore este correo</div>`
+          })
+        res.status(200).send({payload:"se ha enviado un Link a su correo electronico"}) 
+        
+}
+   
+    
+    
+})
+routes.post("/changedpassword",async(req,res)=>{
+    try{
+    const newPassword=bcrypt.hashSync(req.body.newPassword,bcrypt.genSaltSync(10))
+    const filter={email:req.user.email}
+    const update={passWord:newPassword}
+    
+    const user=await userModel.findOne(filter).lean()
+
+    if(user.passWord!==newPassword){
+        const changedPAssword=await userModel.findOneAndUpdate(filter,update,{new:true})
+        res.status(200).send(`<h1>Contraseña ha sido cambiada con exito</h1>`)
+    }else{throw new CustomError(errorDicctionary.PASSWORD_SAME)}
+    
+
+}catch(err){throw new CustomError(errorDicctionary.DATABASE_ERROR)}
+    
+})
 routes.get("/current",sessionAuth,async(req,res)=>{
     try{
         const userToObject=new userDTO(req.session.user)

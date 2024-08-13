@@ -23,7 +23,11 @@ const addLogger=(req,res,next)=>{
 
     req.logger=config.MODE==="dev"?devLogger:productionLogger;
 
-    req.logger.info(`${new Date().toDateString()} ${req.url} ${req.method} `)
+    if(req.session.user){
+        req.logger.info(`${new Date().toDateString()} ${req.url} ${req.method} user: ${req.session.user.email} `)
+    }else{req.logger.info(`${new Date().toDateString()} ${req.url} ${req.method} `)}
+
+    
 
     next()
 }
