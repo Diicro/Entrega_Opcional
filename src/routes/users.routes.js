@@ -6,7 +6,7 @@ import { roleAuth } from "../controller/utils.js";
 
 const routes=Router()
 
-routes.post("/premium",roleAuth(["admin"]),async(req,res)=>{
+routes.post("/premium",roleAuth(["admin"]),async(req,res,next)=>{
 const filter={email:req.body.uid}
 const update={rol:req.body.rol}
 const option={new:true}
@@ -15,7 +15,7 @@ const option={new:true}
             const userUpdate=await userModel.findOneAndUpdate(filter,update,option)
         res.status(200).send({payload:"Se actualizo el rol del usuario satisfactoriamente"})
     }else{
-        res.status(400).send({payload:"Email o rol no permitidos"})}
+        return next(new CustomError(errorDicctionary.RECORD_CREATION_ERROR))}
         
        
 })

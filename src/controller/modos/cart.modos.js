@@ -42,7 +42,7 @@ export const cartModos = {
     throw new CustomError(errorDicctionary.DATABASE_ERROR);}
     
   },
-  addProductToCart: async(req, res) => {
+  addProductToCart: async(req, res,next) => {
     try{
     const id = +req.params.pid;
     const cid = +req.params.cid;
@@ -95,7 +95,7 @@ export const cartModos = {
       // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);
     }else{
-      throw new CustomError(errorDicctionary.AUTHENTICATION)
+      return next(new CustomError(errorDicctionary.AUTHENTICATION)) 
     }
       
     }

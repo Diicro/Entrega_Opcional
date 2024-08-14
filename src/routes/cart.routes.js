@@ -12,6 +12,6 @@ routes.post("/:cid/product/:pid",sessionAuth,roleAuth(["user","premium"]), cartM
 routes.delete("/:cid/products",roleAuth("admin"),cartModos.deleteProducts);
 routes.delete("/:cid/products/:pid",roleAuth("admin"),cartModos.deleteProduct);
 routes.put("/:cid/products/:pid/:qty",roleAuth("admin"),cartModos.addQuantity);
-routes.post("/:cid/purchase",roleAuth("user"),cartModos.addTicket);
+routes.post("/:cid/purchase",roleAuth(["user","premium"]),cartModos.addTicket);
 routes.all('*', async (req, res) => {throw new CustomError(errorDicctionary.ROUTING_ERROR)});
 export default routes;

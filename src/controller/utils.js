@@ -40,7 +40,7 @@ export const sessionAuth=(req, res, next) => {
     
     if(!(role.includes(req.session.user.rol))){
     
-        return res.status(403).send({origin:config.SERVER,payload:"No tienes autorización para este proceso"})
+        return next(new CustomError(errorDicctionary.AUTHENTICATION))
     }else{
       return next()}
     

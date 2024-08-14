@@ -51,7 +51,7 @@ routes.get("/register", (req, res) => {
 routes.get("/login", (req, res) => {
   res.render("login", {});
 })
-routes.get("/admin",sessionAuth,roleAuth("admin"),(req,res)=>{
+routes.get("/admin",sessionAuth,roleAuth(["admin","premium"]),(req,res)=>{
  res.render("admin",{})
 });
 routes.get("/recuperarpassword",(req,res)=>{

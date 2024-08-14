@@ -78,12 +78,12 @@ async(req,res)=>{
 
 }catch(error){return done (error,false)}})
 
-routes.post("/verifyemail",async(req,res)=>{
+routes.post("/verifyemail",async(req,res,next)=>{
     const email=req.body.email
     const user=await userModel.findOne({email:email}).lean()
     
     if(!user){        
-          throw new CustomError(errorDicctionary.ID_NOT_FOUND)       
+          return next(new CustomError(errorDicctionary.ID_NOT_FOUND) )      
     }else{
         
         const token=createToken({email},"5m")
