@@ -51,7 +51,7 @@ routes.get("/register", (req, res) => {
 routes.get("/login", (req, res) => {
   res.render("login", {});
 })
-routes.get("/admin",sessionAuth,roleAuth("Admin"),(req,res)=>{
+routes.get("/admin",sessionAuth,roleAuth("admin"),(req,res)=>{
  res.render("admin",{})
 });
 routes.get("/recuperarpassword",(req,res)=>{
@@ -59,6 +59,9 @@ routes.get("/recuperarpassword",(req,res)=>{
 })
 routes.get("/cambiocontrasena",verifyToken,(req,res)=>{
   res.render("cambioContraseña",{})
+})
+routes.get("/tokeninvalid",(req,res)=>{
+  res.render("tokenInvalid",{error:req.query.error})
 })
 
 // routes.all('*', async (req, res) => {throw new CustomError(errorDicctionary.ROUTING_ERROR)});

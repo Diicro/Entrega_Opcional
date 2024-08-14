@@ -11,6 +11,7 @@ import viewsRoutes from "./routes/views.routes.js";
 import productsRoutes from "./routes/products.routes.js";
 import cartsRoutes from "./routes/cart.routes.js";
 import loginRoutes from "./routes/login_singnin.routes.js"
+import userRoutes from "./routes/users.routes.js"
 import chatModel from "./dao/models/chat.model.js"
 import config from "./config.js";
 import errorsHandler from "./controller/error.handler.js";
@@ -40,6 +41,7 @@ app.use("/views", viewsRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartsRoutes);
 app.use("/api/sessions",loginRoutes)
+app.use("/api/users",userRoutes)
 app.use(errorsHandler)
 
 const httpserver = app.listen(config.PORT, async () => {

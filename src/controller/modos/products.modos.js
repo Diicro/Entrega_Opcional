@@ -6,7 +6,7 @@ import CollectionManager from "./modos.manager.js";
 
 
 class productDTO{
-constructor(data,id){
+constructor(data,id,user){
   this.id=+id;
   this.title= data.title;
   this.description= data.description;
@@ -15,7 +15,9 @@ constructor(data,id){
   this.code= +data.code;
   this.stock= +data.stock;
   this.status= true;
-  this.category=data.category
+  this.category=data.category;
+  this.owner=user.email
+  this.rol=user.rol
 }
 }
 
@@ -61,7 +63,7 @@ export const productsModos = {
       const products = await productsModel.find({}).lean();
       products.length < 1 ? (id = -1) : (id = products.length - 1);
       
-      const productNomalized= new productDTO(req.body,id+1)
+      const productNomalized= new productDTO(req.body,id+1,req.session.user)
 
       const completeSpace = Object.values(productNomalized).includes(undefined);
       const productseasy = [...products];
@@ -130,7 +132,7 @@ export const productsModos = {
     if (getProducts.length === upgrateArray.length) {
       req.logger.warn("El producto a eliminar no existe")
       throw new CustomError(errorDicctionary.ID_NOT_FOUND);
-    } else {
+    }else if(req.session.user.rol==="admin") {
 
     const socketServer = req.app.get("socketServer");
     const deleteProduct= await manager.delete(id,upgrateArray)
@@ -139,6 +141,21 @@ export const productsModos = {
     
     const products = await productsModel.find({}).lean();
     socketServer.emit("upGradeProducts", products)}
+    else{
+      const productToDelete= await productsModel.findOne({id:id})
+      if(productToDelete.owner===req.session.user.email){
+
+        const socketServer = req.app.get("socketServer");
+        const deleteProduct= await manager.delete(id,upgrateArray)
+        req.logger.info(`Eliminó el producto ${deleteProduct}`)
+        res.status(200).send(`Eliminado:${deleteProduct}`)
+    
+        const products = await productsModel.find({}).lean();
+        socketServer.emit("upGradeProducts", products)
+      }else{
+        throw new CustomError(errorDicctionary.AUTHENTICATION)
+      }
+    }
     }catch(error){
       req.logger.error("Error al acceder a la base datos")
       throw new CustomError(errorDicctionary.DATABASE_ERROR);}

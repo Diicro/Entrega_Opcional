@@ -10,15 +10,15 @@ export const createToken=(payload,time)=>jwt.sign(payload,config.SECRET,{expires
 export const verifyToken=(req,res,next)=>{
   const token=req.query.token
 
-  if(!token) { 
-    throw new CustomError(errorDicctionary.TOKEN_ERROR)
-
+  if(!token) {
+   res.redirect(`http://localhost:8080/views/tokeninvalid?error=Token no valido o caducado`)
   }else{
     jwt.verify(token,config.SECRET,(err,payload)=>{ 
   if(err){
-    throw new CustomError(errorDicctionary.TOKEN_ERROR)
+    res.redirect(`http://localhost:8080/views/tokeninvalid?error=Token no valido o caducado`)
+   
 
-  }else{console.log(token)
+  }else{
     req.user=payload
     console.log(req.user)
       next()
@@ -38,11 +38,12 @@ export const sessionAuth=(req, res, next) => {
 
   export const roleAuth=(role)=>{return(req,res,next)=>{
     
-    if(!(role===req.session.user.rol)){
+    if(!(role.includes(req.session.user.rol))){
     
         return res.status(403).send({origin:config.SERVER,payload:"No tienes autorización para este proceso"})
-    }
-    next()
+    }else{
+      return next()}
+    
   }}
   export const transport=nodemailer.createTransport({
     service:"gmail",

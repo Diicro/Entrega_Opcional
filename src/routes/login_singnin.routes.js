@@ -102,7 +102,7 @@ routes.post("/verifyemail",async(req,res)=>{
     
     
 })
-routes.post("/changedpassword",async(req,res)=>{
+routes.post("/changedpassword",verifyToken,async(req,res)=>{
     try{
     const newPassword=bcrypt.hashSync(req.body.newPassword,bcrypt.genSaltSync(10))
     const filter={email:req.user.email}
@@ -110,13 +110,13 @@ routes.post("/changedpassword",async(req,res)=>{
     
     const user=await userModel.findOne(filter).lean()
 
-    if(user.passWord!==newPassword){
+    if(!bcrypt.compareSync(req.body.newPassword,user.passWord)){
         const changedPAssword=await userModel.findOneAndUpdate(filter,update,{new:true})
         res.status(200).send(`<h1>Contraseña ha sido cambiada con exito</h1>`)
-    }else{throw new CustomError(errorDicctionary.PASSWORD_SAME)}
+    }else{
+        throw new CustomError(errorDicctionary.PASSWORD_SAME)
+    }}catch(error){throw new CustomError(errorDicctionary.DATABASE_ERROR)}
     
-
-}catch(err){throw new CustomError(errorDicctionary.DATABASE_ERROR)}
     
 })
 routes.get("/current",sessionAuth,async(req,res)=>{

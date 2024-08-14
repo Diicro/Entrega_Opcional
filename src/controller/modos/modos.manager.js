@@ -64,7 +64,7 @@ try{
     fs.writeFileSync(upath, JSON.stringify(products));
     
     return updateProduct
-}catch(error){ 
+ }catch(error){ 
     req.logger.error("Error al acceder a la base datos")
     throw new CustomError(errorDicctionary.DATABASE_ERROR);}
     }

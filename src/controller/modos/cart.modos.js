@@ -77,6 +77,9 @@ export const cartModos = {
         product: id,
         quantity: quantity + 1,
       };
+      const productMdb=await productsModel.findOne({id:id})
+      if(req.session.user.email!==productMdb.owner){
+      
       const filter={id:cid};
       const update={products:[...outProductDb, producInCart]}
       // const newProduct = [...outProductDb, producInCart];
@@ -91,6 +94,10 @@ export const cartModos = {
       // carts[cid].products = newProduct;
       // fs.writeFileSync(upath, JSON.stringify(carts));
       res.status(200).send(`Se añadio ${ola}al carrito con exito`);
+    }else{
+      throw new CustomError(errorDicctionary.AUTHENTICATION)
+    }
+      
     }
     }catch(error){
       

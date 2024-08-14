@@ -8,7 +8,7 @@ export const errorDicctionary={
     CODE_EXIST: { code: 6, status: 400, message: 'El codigo ya existe' },
     EMAIL_EXIST:{code:7, status:400,message:'El correo ya existe'},
     LOG_OUT:{code:8, status:401,message:'Debe iniciar sesion'},
-    TOKEN_ERROR:{code:9,status:401,mesagge:'Token expirado'},
-    PASSWORD_SAME:{code:10,status:400,mesagge:'La nueva contraseña no puede ser igual que la anterior'},
-
+    TOKEN_ERROR:{code:9,status:401,message:'Token expirado'},
+    PASSWORD_SAME:{code:10,status:400,message:'La nueva contraseña no puede ser igual que la anterior'},
+    AUTHENTICATION:{code:11,status:403,message:'No tiene autorización'},
 }
