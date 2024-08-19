@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import session from "express-session";
 import FileStore from "session-file-store"
 import passport from "passport";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express"
 
 
 import viewsRoutes from "./routes/views.routes.js";
@@ -42,6 +44,18 @@ app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartsRoutes);
 app.use("/api/sessions",loginRoutes)
 app.use("/api/users",userRoutes)
+
+const swaggerOptions={
+  definition: {
+      openapi: '3.0.0',
+      info: {
+          title: 'Documentacion Fashapets',
+          description: 'Esta documentación cubre toda la API habilitada para Fashapets',
+      },
+  },
+  apis: ['./src/docs/**/*.yaml']}
+  const hola=swaggerJsdoc(swaggerOptions)
+app.use("/api/document",swaggerUiExpress.serve,swaggerUiExpress.setup(hola))
 app.use(errorsHandler)
 
 const httpserver = app.listen(config.PORT, async () => {

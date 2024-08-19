@@ -1,0 +1,151 @@
+openapi: 3.0.0
+info:
+  title: API de Productos
+  description: API para manejar productos con autenticación y autorización basada en sesiones.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo en puerto 8080
+paths:
+  /api/products:
+    get:
+      summary: Obtener todos los productos
+      description: Recupera una lista de todos los productos disponibles.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Agregar un nuevo producto
+      description: Añade un nuevo producto a la base de datos.
+      security:
+        - sessionAuth: []
+        - roleAuth:
+            - admin
+            - premium
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Producto creado
+        '403':
+          description: Acceso denegado
+
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto por ID
+      description: Recupera un producto específico utilizando su ID.
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: number
+          description: ID del producto a recuperar
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+    delete:
+      summary: Eliminar un producto
+      description: Elimina un producto específico utilizando su ID.
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: number
+          description: ID del producto a eliminar
+      security:
+        - sessionAuth: []
+        - roleAuth:
+            - admin
+            - premium
+      responses:
+        '204':
+          description: Producto eliminado
+        '403':
+          description: Acceso denegado
+
+  /api/products/update:
+    post:
+      summary: Actualizar un producto
+      description: Actualiza la información de un producto existente.
+      security:
+        - sessionAuth: []
+        - roleAuth:
+            - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Producto actualizado
+        '403':
+          description: Acceso denegado
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID del producto
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          format: float
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: URL de la imagen del producto
+        code:
+          type: number
+          description: Código del producto
+        stock:
+          type: number
+          description: Cantidad en stock
+        status:
+          type: boolean
+          description: Estado del producto (disponible o no)
+        category:
+          type: string
+          description: Categoría del producto
+
+  securitySchemes:
+    sessionAuth:
+      type: http
+      scheme: cookie
+      description: Autenticación basada en sesiones de Express a través de cookies de sesión.
+    roleAuth:
+      type: apiKey
+      in: header
+      name: X-Role
+      description: Autorización basada en roles, se incluye en el encabezado X-Role
