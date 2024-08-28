@@ -4,7 +4,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/test/cart.chai.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -31,5 +31,10 @@
     "winston": "^3.13.1"
   },
   "keywords": [],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "chai": "^4.4.1",
+    "mocha": "^10.6.0",
+    "supertest": "^7.0.0"
+  }
 }

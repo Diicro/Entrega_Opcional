@@ -5,44 +5,44 @@ import { roleAuth, verifyToken } from "../controller/utils.js";
 import { errorDicctionary } from "../controller/errorsDictionary.js";
 import CustomError from "../controller/customError.js";
 
-
 const routes = Router();
 
-const sessionAuth= (req, res, next) => {
+const sessionAuth = (req, res, next) => {
   if (!req.session.user)
-
-      return res.status(401).send({ origin: config.SERVER, payload: 'Inicia sesion' });
+    return res
+      .status(401)
+      .send({ origin: config.SERVER, payload: "Inicia sesion" });
 
   next();
-}
+};
 
-routes.get("/products",sessionAuth, async (req, res) => {
-  const option={
-    limit:3,
-    page:+req.query.page||1,
-    sort:{id:1},
-    lean:true,
-  leanWithId:false}
-    
-  const products = await productsModel.paginate({},option)
-  const productsandUser= {...products,...req.session.user}
-  const allProducts = { products: productsandUser};
-  
+routes.get("/products", sessionAuth, async (req, res) => {
+  const option = {
+    limit: 3,
+    page: +req.query.page || 1,
+    sort: { id: 1 },
+    lean: true,
+    leanWithId: false,
+  };
 
-  res.render("home", allProducts );
+  const products = await productsModel.paginate({}, option);
+  const productsandUser = { ...products, ...req.session.user };
+  const allProducts = { products: productsandUser };
+
+  res.render("home", allProducts);
 });
 
 routes.get("/realtimeproducts", async (req, res) => {
   const products = await productsModel.find().lean();
 
   const allProducts = { products: products };
-  console.log(allProducts)
+  console.log(allProducts);
   res.render("realTimeProducts", allProducts);
 });
 
-routes.get("/chat",sessionAuth, (req, res) => {
-  const user={...req.session.user}
-  res.render("chat", {user:user});
+routes.get("/chat", sessionAuth, (req, res) => {
+  const user = { ...req.session.user };
+  res.render("chat", { user: user });
 });
 
 routes.get("/register", (req, res) => {
@@ -50,20 +50,27 @@ routes.get("/register", (req, res) => {
 });
 routes.get("/login", (req, res) => {
   res.render("login", {});
-})
-routes.get("/admin",sessionAuth,roleAuth(["admin","premium"]),(req,res)=>{
- res.render("admin",{})
 });
-routes.get("/recuperarpassword",(req,res)=>{
-  res.render("recuperarPassword",{})
-})
-routes.get("/cambiocontrasena",verifyToken,(req,res)=>{
-  res.render("cambioContraseña",{})
-})
-routes.get("/tokeninvalid",(req,res)=>{
-  res.render("tokenInvalid",{error:req.query.error})
-})
+routes.get(
+  "/admin",
+  sessionAuth,
+  roleAuth(["admin", "premium"]),
+  (req, res) => {
+    res.render("admin", {});
+  }
+);
+routes.get("/recuperarpassword", (req, res) => {
+  res.render("recuperarPassword", {});
+});
+routes.get("/cambiocontrasena", verifyToken, (req, res) => {
+  res.render("cambioContraseña", {});
+});
+routes.get("/tokeninvalid", (req, res) => {
+  res.render("tokenInvalid", { error: req.query.error });
+});
 
-// routes.all('*', async (req, res) => {throw new CustomError(errorDicctionary.ROUTING_ERROR)});
+routes.all("*", async (req, res) => {
+  throw new CustomError(errorDicctionary.ROUTING_ERROR);
+});
 
 export default routes;

@@ -6,7 +6,7 @@ import { roleAuth, sessionAuth } from "../controller/utils.js";
 const routes = Router();
 
 routes.get("/all",sessionAuth, productsModos.getProducts);
-routes.get("/one/:pid",sessionAuth, productsModos.getProductsById);
+routes.get("/:pid",sessionAuth, productsModos.getProductsById);
 routes.post("/",sessionAuth,roleAuth(["admin","premium"]), productsModos.addProduct);
 routes.post("/update",sessionAuth,roleAuth("admin"), productsModos.upDateProduct);
 routes.delete("/:pid",sessionAuth,roleAuth(["admin","premium"]), productsModos.deleteProduct);
