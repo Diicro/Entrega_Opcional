@@ -68,7 +68,7 @@ routes.get("/cambiocontrasena", verifyToken, (req, res) => {
 routes.get("/tokeninvalid", (req, res) => {
   res.render("tokenInvalid", { error: req.query.error });
 });
-routes.get("/documents", (req, res) => {
+routes.get("/documents", sessionAuth, (req, res) => {
   res.render("documents", {});
 });
 
