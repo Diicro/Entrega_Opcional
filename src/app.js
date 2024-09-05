@@ -60,6 +60,7 @@ if (cluster.isPrimary) {
     swaggerUiExpress.setup(swaggerJsdoc(config.SWANGGER_OPTIONS))
   );
   app.use(errorsHandler);
+  app.use("/uploads",express.static(config.UPLOAD_DIR))
 
   const httpserver = app.listen(config.PORT, async () => {
     await mongoose.connect(config.MONGODB_URI);

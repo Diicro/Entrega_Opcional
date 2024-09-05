@@ -33,11 +33,11 @@ routes.post(
     try {
       if (req.user === "false") {
         req.logger.error("Email ya existe");
-        next(new CustomError(errorDicctionary.EMAIL_EXIST));
+        throw new CustomError(errorDicctionary.EMAIL_EXIST);
+      } else {
+        await userModel.create(req.user);
+        res.redirect("/views/login");
       }
-
-      await userModel.create(req.user);
-      res.status.redirect("/views/login");
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
       res.status(500).send(error.message);
@@ -56,6 +56,13 @@ routes.post("/pplogin", passport.authenticate("login"), async (req, res) => {
         if (error) {
           return res.status(500).send({ payload: null, error: error.message });
         }
+        await userModel.findOneAndUpdate(
+          { email: req.session.user.email },
+          {
+            last_connection: new Date().toString(),
+          },
+          { new: true }
+        );
         res.redirect("/views/products");
       });
     }

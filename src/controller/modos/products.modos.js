@@ -4,12 +4,12 @@ import { errorDicctionary } from "../errorsDictionary.js";
 import CollectionManager from "./modos.manager.js";
 
 class productDTO {
-  constructor(data, id, user) {
+  constructor(data, file, id, user) {
     this.id = +id;
     this.title = data.title;
     this.description = data.description;
     this.price = +data.price;
-    this.thubnail = data.thubnail || "[]";
+    this.thumbnail = file.filename || "[]";
     this.code = +data.code;
     this.stock = +data.stock;
     this.status = true;
@@ -64,6 +64,7 @@ export const productsModos = {
 
       const productNomalized = new productDTO(
         req.body,
+        req.file,
         id + 1,
         req.session.user
       );

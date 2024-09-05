@@ -68,6 +68,9 @@ routes.get("/cambiocontrasena", verifyToken, (req, res) => {
 routes.get("/tokeninvalid", (req, res) => {
   res.render("tokenInvalid", { error: req.query.error });
 });
+routes.get("/documents", (req, res) => {
+  res.render("documents", {});
+});
 
 routes.all("*", async (req, res) => {
   throw new CustomError(errorDicctionary.ROUTING_ERROR);

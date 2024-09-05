@@ -3,13 +3,14 @@
     <input id="inputDelete" name="pid" placeholder="Id producto a Eliminar">
     <button type="submit" >Eliminar Producto</button>
 </form>
-<form action="/api/products" method="post">
+<form action="/api/products/products" method="post" enctype="multipart/form-data">
     <input type="text" id="titleCreate" name="title" required="required"placeholder="title">
     <input type="text" id="descriptionCreate" name="description" required="required" placeholder="description">
     <input type="number" id="priceCreate" name="price" required="required" placeholder="Price">
     <input type="number" id="codeCreate" name="code" required="required" placeholder="code">
     <input type="number" id="stockCreate" name="stock" required="required" placeholder="stock">
     <input type="text" id="categoryCreate" name="category" required="required" placeholder="category">
+    <input type="file" name="thumbnail" >
     <button type="submit">Crear producto</button>
  </form>
 <form action="/api/products/update" method="post">

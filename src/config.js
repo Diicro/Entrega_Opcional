@@ -9,6 +9,10 @@ const config = {
   DIRNAME: path.dirname(
     new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:\/)/, "$1")
   ),
+  get UPLOAD_DIR() {
+    return `${this.DIRNAME}/uploads`;
+  },
+
   SWANGGER_OPTIONS: {
     definition: {
       openapi: "3.0.0",

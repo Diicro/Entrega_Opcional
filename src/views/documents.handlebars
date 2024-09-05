@@ -1,0 +1,9 @@
+<h2>Inserte documentos</h2>
+<h3>Ingrese los siguientes documentos con los siguientes nombres segun corresponda "identificación","comprobante de domicilio" o "comprobante de estado de cuenta" </h3>
+<form action="/api/users/documents" method="POST" enctype="multipart/form-data" >
+<br/>
+<input type="text" placeholder="nombre de documento" name="title" required="required">
+<br/>
+<input type="file" name="documents"><br/>
+<button type="submit">Enviar</button>
+</form>
