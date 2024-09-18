@@ -4,7 +4,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "mocha src/test/cart.chai.test.js"
+    "test": "mocha src/test/cart.chai.test.js",
+    "start": "node src/app.js"
   },
   "author": "",
   "license": "ISC",
