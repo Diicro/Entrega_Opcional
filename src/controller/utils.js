@@ -17,6 +17,7 @@ export const verifyToken = (req, res, next) => {
     res.redirect(
       `https://entrega-opcional.onrender.com/views/tokeninvalid?error=Token no valido o caducado`
     );
+    console.log("hola");
   } else {
     jwt.verify(token, config.SECRET, (err, payload) => {
       if (err) {
