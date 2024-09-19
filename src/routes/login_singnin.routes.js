@@ -115,7 +115,7 @@ routes.post("/verifyemail", async (req, res, next) => {
       from: `FachaPets <${config.GMAIL_APP_USER}>`,
       to: email,
       subject: "Cambio de contraseña",
-      html: `<h1>Restaurar constraseña: http://localhost:8080/views/cambiocontrasena?token=${token}</h1>
+      html: `<h1>Restaurar constraseña: https://entrega-opcional.onrender.com/views/cambiocontrasena?token=${token}</h1>
             <div>Si usted no ha sido,ignore este correo</div>`,
     });
     res
