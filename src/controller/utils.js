@@ -1,4 +1,5 @@
 import config from "../config.js";
+mod;
 import nodemailer from "nodemailer";
 import { errorDicctionary } from "./errorsDictionary.js";
 import CustomError from "./customError.js";
@@ -15,13 +16,13 @@ export const verifyToken = (req, res, next) => {
 
   if (!token) {
     res.redirect(
-      `http://localhost:8080/views/tokeninvalid?error=Token no valido o caducado`
+      `https://entrega-opcional.onrender.com/views/tokeninvalid?error=Token no valido o caducado`
     );
   } else {
     jwt.verify(token, config.SECRET, (err, payload) => {
       if (err) {
         res.redirect(
-          `http://localhost:8080/views/tokeninvalid?error=Token no valido o caducado`
+          `https://entrega-opcional.onrender.com/views/tokeninvalid?error=Token no valido o caducado`
         );
       } else {
         req.user = payload;
