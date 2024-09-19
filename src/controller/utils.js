@@ -1,5 +1,4 @@
 import config from "../config.js";
-mod;
 import nodemailer from "nodemailer";
 import { errorDicctionary } from "./errorsDictionary.js";
 import CustomError from "./customError.js";
