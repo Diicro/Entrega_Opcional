@@ -101,7 +101,6 @@ routes.get(
     }
   }
 );
-z;
 
 routes.post("/verifyemail", async (req, res, next) => {
   const email = req.body.email;
