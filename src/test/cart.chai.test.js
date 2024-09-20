@@ -2,7 +2,7 @@ import chai from "chai";
 import supertest from "supertest";
 
 const expect = chai.expect;
-const request = supertest("http://localhost:8080");
+const request = supertest("https://entrega-opcional.onrender.com");
 
 const user = {
   email: "ni-co68@hotmail.com",

@@ -72,8 +72,8 @@ routes.get("/documents", sessionAuth, (req, res) => {
   res.render("documents", {});
 });
 
-routes.all("*", async (req, res) => {
-  throw new CustomError(errorDicctionary.ROUTING_ERROR);
+routes.all("*", async (req, res, next) => {
+  next(new CustomError(errorDicctionary.ROUTING_ERROR));
 });
 
 export default routes;

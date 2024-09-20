@@ -4,7 +4,7 @@ info:
   description: API para manejar productos con autenticación y autorización basada en sesiones.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+  - url: https://entrega-opcional.onrender.com
     description: Servidor local de desarrollo en puerto 8080
 paths:
   /api/products:
@@ -14,14 +14,14 @@ paths:
       security:
         - sessionAuth: []
       responses:
-        '200':
+        "200":
           description: Lista de productos
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Product'
+                  $ref: "#/components/schemas/Product"
     post:
       summary: Agregar un nuevo producto
       description: Añade un nuevo producto a la base de datos.
@@ -35,11 +35,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: "#/components/schemas/Product"
       responses:
-        '201':
+        "201":
           description: Producto creado
-        '403':
+        "403":
           description: Acceso denegado
 
   /api/products/{pid}:
@@ -56,13 +56,13 @@ paths:
       security:
         - sessionAuth: []
       responses:
-        '200':
+        "200":
           description: Producto encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
-        '404':
+                $ref: "#/components/schemas/Product"
+        "404":
           description: Producto no encontrado
     delete:
       summary: Eliminar un producto
@@ -80,9 +80,9 @@ paths:
             - admin
             - premium
       responses:
-        '204':
+        "204":
           description: Producto eliminado
-        '403':
+        "403":
           description: Acceso denegado
 
   /api/products/update:
@@ -98,11 +98,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: "#/components/schemas/Product"
       responses:
-        '200':
+        "200":
           description: Producto actualizado
-        '403':
+        "403":
           description: Acceso denegado
 
 components:

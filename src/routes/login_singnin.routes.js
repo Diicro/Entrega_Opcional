@@ -101,6 +101,7 @@ routes.get(
     }
   }
 );
+z;
 
 routes.post("/verifyemail", async (req, res, next) => {
   const email = req.body.email;
@@ -133,7 +134,7 @@ routes.post("/changedpassword", async (req, res) => {
     const update = { passWord: newPassword };
 
     const user = await userModel.findOne(filter).lean();
-
+    console.log("joder");
     if (!bcrypt.compareSync(req.body.newPassword, user.passWord)) {
       const changedPAssword = await userModel.findOneAndUpdate(filter, update, {
         new: true,
