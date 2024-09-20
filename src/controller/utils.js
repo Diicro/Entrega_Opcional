@@ -12,12 +12,12 @@ export const createToken = (payload, time) =>
 
 export const verifyToken = (req, res, next) => {
   const token = req.query.token;
-
+  console(`${token} holaaaa`);
   if (!token) {
     res.redirect(
       `https://entrega-opcional.onrender.com/views/tokeninvalid?error=Token no valido o caducado`
     );
-    console.log("hola");
+    console.log(token);
   } else {
     jwt.verify(token, config.SECRET, (err, payload) => {
       if (err) {
