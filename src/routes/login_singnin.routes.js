@@ -123,7 +123,7 @@ routes.post("/verifyemail", async (req, res, next) => {
       .send({ payload: "se ha enviado un Link a su correo electronico" });
   }
 });
-routes.post("/changedpassword", verifyToken, async (req, res) => {
+routes.post("/changedpassword", async (req, res) => {
   try {
     const newPassword = bcrypt.hashSync(
       req.body.newPassword,
