@@ -87,13 +87,15 @@ routes.get(
       if (req.user === "false") {
         res.status(401).send({ payload: "Faltan datos de usuario en GitHub" });
       } else {
-        req.session.save(async (error) => {
+        const newCart = await cartModos.createCart();
+        const filter = { email: req.session.user.email };
+        const update = { cart: newCart };
+        await userModel.findOneAndUpdate(filter, update, { new: true });
+        req.session.user = { ...req.session.user, cart: newCart };
+        req.session.save((error) => {
           if (error) {
             return res.send(errorDicctionary.UNHANDLED_ERROR);
           } else {
-            const filter = { email: req.session.user.email };
-            const update = { cart: await cartModos.createCart() };
-            await userModel.findOneAndUpdate(filter, update, { new: true });
             res.redirect("/views/products");
           }
         });
