@@ -55,7 +55,7 @@ export const productsModos = {
     }
   },
 
-  addProduct: async (req, res) => {
+  addProduct: async (req, res, next) => {
     try {
       let id;
 
@@ -77,10 +77,10 @@ export const productsModos = {
 
       if (completeSpace) {
         req.logger.warn("Faltan parametros del producto");
-        throw new CustomError(errorDicctionary.FEW_PARAMETERS);
+        next(new CustomError(errorDicctionary.FEW_PARAMETERS));
       } else if (codeExiste) {
         req.logger.info("El codigo ya existe");
-        throw new CustomError(errorDicctionary.CODE_EXIST);
+        next(new CustomError(errorDicctionary.CODE_EXIST));
       } else {
         const socketServer = req.app.get("socketServer");
         req.logger.debug(productNomalized);
@@ -95,7 +95,7 @@ export const productsModos = {
       }
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
-      throw new CustomError(errorDicctionary.DATABASE_ERROR);
+      next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   },
 
