@@ -90,8 +90,10 @@ routes.get(
         const newCart = await cartModos.createCart();
         const filter = { email: req.session.user.email };
         const update = { cart: newCart };
-        await userModel.findOneAndUpdate(filter, update, { new: true });
-        req.session.user = { ...req.session.user, cart: newCart };
+        const newUser = await userModel.findOneAndUpdate(filter, update, {
+          new: true,
+        });
+        req.session.user = { ...newUser, cart: newCart };
         console.log(req.session.user);
         req.session.save((error) => {
           if (error) {
