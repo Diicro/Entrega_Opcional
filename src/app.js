@@ -7,6 +7,7 @@ import FileStore from "session-file-store";
 import passport from "passport";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
+import cors from "cors";
 
 import viewsRoutes from "./routes/views.routes.js";
 import productsRoutes from "./routes/products.routes.js";
@@ -47,6 +48,7 @@ if (cluster.isPrimary) {
   app.set("view engine", "handlebars");
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+  app.use(cors({ origin: "*" }));
 
   app.use(addLogger);
   app.use("/views", viewsRoutes);
@@ -60,7 +62,7 @@ if (cluster.isPrimary) {
     swaggerUiExpress.setup(swaggerJsdoc(config.SWANGGER_OPTIONS))
   );
   app.use(errorsHandler);
-  app.use("/uploads",express.static(config.UPLOAD_DIR))
+  app.use("/uploads", express.static(config.UPLOAD_DIR));
 
   const httpserver = app.listen(config.PORT, async () => {
     await mongoose.connect(config.MONGODB_URI);

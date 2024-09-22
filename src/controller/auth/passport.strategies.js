@@ -84,7 +84,6 @@ const initAuthStrategy = () => {
       async (req, accessToken, refreshToken, profile, done) => {
         try {
           const email = profile._json.email;
-          console.log(email);
           if (email) {
             const findUser = await userModel.findOne({ email: email });
             if (!findUser) {

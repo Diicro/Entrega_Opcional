@@ -12,6 +12,7 @@ import CustomError from "../controller/customError.js";
 import { errorDicctionary } from "../controller/errorsDictionary.js";
 import config from "../config.js";
 import bcrypt from "bcrypt";
+import { cartModos } from "../controller/modos/cart.modos.js";
 
 const routes = Router();
 initAuthStrategy();
@@ -33,7 +34,7 @@ routes.post(
     try {
       if (req.user === "false") {
         req.logger.error("Email ya existe");
-        throw new CustomError(errorDicctionary.EMAIL_EXIST);
+        next(new CustomError(errorDicctionary.EMAIL_EXIST));
       } else {
         await userModel.create(req.user);
         res.redirect("/views/login");
@@ -54,7 +55,7 @@ routes.post("/pplogin", passport.authenticate("login"), async (req, res) => {
     } else {
       req.session.save(async (error) => {
         if (error) {
-          return res.status(500).send({ payload: null, error: error.message });
+          return res.send(errorDicctionary.UNHANDLED_ERROR);
         }
         await userModel.findOneAndUpdate(
           { email: req.session.user.email },
@@ -86,12 +87,13 @@ routes.get(
       if (req.user === "false") {
         res.status(401).send({ payload: "Faltan datos de usuario en GitHub" });
       } else {
-        req.session.save((error) => {
+        req.session.save(async (error) => {
           if (error) {
-            return res
-              .status(500)
-              .send({ payload: "Error", error: error.message });
+            return res.send(errorDicctionary.UNHANDLED_ERROR);
           } else {
+            const filter = { email: req.session.user.email };
+            const update = { cart: await cartModos.createCart() };
+            await userModel.findOneAndUpdate(filter, update, { new: true });
             res.redirect("/views/products");
           }
         });
