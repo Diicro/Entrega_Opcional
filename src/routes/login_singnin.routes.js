@@ -92,6 +92,7 @@ routes.get(
         const update = { cart: newCart };
         await userModel.findOneAndUpdate(filter, update, { new: true });
         req.session.user = { ...req.session.user, cart: newCart };
+        console.log(req.session.user);
         req.session.save((error) => {
           if (error) {
             return res.send(errorDicctionary.UNHANDLED_ERROR);
