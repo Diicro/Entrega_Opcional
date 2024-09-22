@@ -95,6 +95,8 @@ routes.get(
         });
         req.session.user = { ...newUser, cart: newCart };
         console.log(req.session.user);
+        console.log(req.user);
+
         req.session.save((error) => {
           if (error) {
             return res.send(errorDicctionary.UNHANDLED_ERROR);
