@@ -99,7 +99,7 @@ export const productsModos = {
     }
   },
 
-  upDateProduct: async (req, res) => {
+  upDateProduct: async (req, res, next) => {
     try {
       const id = +req.body.id;
       const filter = { id: id };
@@ -115,7 +115,7 @@ export const productsModos = {
       );
       if (sameCode) {
         req.logger.info("El codigo ya existe");
-        throw new CustomError(errorDicctionary.CODE_EXIST);
+        next(new CustomError(errorDicctionary.CODE_EXIST));
       } else {
         const updates = await manager.update(
           filter,
@@ -131,7 +131,7 @@ export const productsModos = {
       }
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
-      throw new CustomError(errorDicctionary.DATABASE_ERROR);
+      next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   },
   deleteProduct: async (req, res) => {
