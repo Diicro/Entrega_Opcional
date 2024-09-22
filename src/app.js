@@ -6,7 +6,7 @@ import session from "express-session";
 import FileStore from "session-file-store";
 import passport from "passport";
 import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUiExpress from "swagger-ui-express";
+import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 
 import viewsRoutes from "./routes/views.routes.js";
@@ -58,8 +58,8 @@ if (cluster.isPrimary) {
   app.use("/api/users", userRoutes);
   app.use(
     "/api/document",
-    swaggerUiExpress.serve,
-    swaggerUiExpress.setup(swaggerJsdoc(config.SWANGGER_OPTIONS))
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerJsdoc(config.SWANGGER_OPTIONS))
   );
   app.use(errorsHandler);
   app.use("/uploads", express.static(config.UPLOAD_DIR));

@@ -1,16 +1,16 @@
 openapi: 3.0.0
 info:
   title: API de Productos
-  description: API para manejar productos con autenticación y autorización basada en sesiones.
   version: 1.0.0
+  description: Documentación de la API para manejar productos.
 servers:
-  - url: https://entrega-opcional.onrender.com
-    description: Servidor local de desarrollo en puerto 8080
+  - url: https://entrega-opcional.onrender.com/api/products
+
 paths:
-  /api/products:
+  /all:
     get:
       summary: Obtener todos los productos
-      description: Recupera una lista de todos los productos disponibles.
+      description: Devuelve una lista de todos los productos disponibles.
       security:
         - sessionAuth: []
       responses:
@@ -21,131 +21,165 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Product"
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    price:
+                      type: number
+                    thumbnail:
+                      type: string
+                      nullable: true
+                    code:
+                      type: number
+                    stock:
+                      type: number
+                    status:
+                      type: boolean
+                    category:
+                      type: string
+                    owner:
+                      type: string
+                    rol:
+                      type: string
+        "401":
+          description: No autorizado - la sesión no es válida
+        "500":
+          description: Error del servidor
+
+  /update:
     post:
-      summary: Agregar un nuevo producto
-      description: Añade un nuevo producto a la base de datos.
+      summary: Actualizar un producto
+      description: Permite a un administrador actualizar la información de un producto.
       security:
         - sessionAuth: []
-        - roleAuth:
-            - admin
-            - premium
+        - roleAuth: ["admin"]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Product"
+              type: object
+              properties:
+                id:
+                  type: number
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                thumbnail:
+                  type: string
+                  nullable: true
+                code:
+                  type: number
+                stock:
+                  type: number
+                status:
+                  type: boolean
+                category:
+                  type: string
+                owner:
+                  type: string
+                rol:
+                  type: string
       responses:
-        "201":
-          description: Producto creado
+        "200":
+          description: Producto actualizado exitosamente
         "403":
-          description: Acceso denegado
+          description: Acceso denegado - rol no autorizado
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error del servidor
 
-  /api/products/{pid}:
+  /{pid}:
     get:
       summary: Obtener un producto por ID
-      description: Recupera un producto específico utilizando su ID.
-      parameters:
-        - in: path
-          name: pid
-          required: true
-          schema:
-            type: number
-          description: ID del producto a recuperar
+      description: Devuelve la información de un producto específico utilizando su ID.
       security:
         - sessionAuth: []
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a obtener
+          schema:
+            type: number
       responses:
         "200":
           description: Producto encontrado
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                type: object
+                properties:
+                  id:
+                    type: number
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  price:
+                    type: number
+                  thumbnail:
+                    type: string
+                    nullable: true
+                  code:
+                    type: number
+                  stock:
+                    type: number
+                  status:
+                    type: boolean
+                  category:
+                    type: string
+                  owner:
+                    type: string
+                  rol:
+                    type: string
         "404":
           description: Producto no encontrado
+        "401":
+          description: No autorizado - la sesión no es válida
+        "500":
+          description: Error del servidor
+
     delete:
       summary: Eliminar un producto
-      description: Elimina un producto específico utilizando su ID.
+      description: Permite a un administrador o premium eliminar un producto.
+      security:
+        - sessionAuth: []
+        - roleAuth: ["admin", "premium"]
       parameters:
-        - in: path
-          name: pid
+        - name: pid
+          in: path
           required: true
+          description: ID del producto a eliminar
           schema:
             type: number
-          description: ID del producto a eliminar
-      security:
-        - sessionAuth: []
-        - roleAuth:
-            - admin
-            - premium
       responses:
         "204":
-          description: Producto eliminado
+          description: Producto eliminado exitosamente
         "403":
-          description: Acceso denegado
-
-  /api/products/update:
-    post:
-      summary: Actualizar un producto
-      description: Actualiza la información de un producto existente.
-      security:
-        - sessionAuth: []
-        - roleAuth:
-            - admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Product"
-      responses:
-        "200":
-          description: Producto actualizado
-        "403":
-          description: Acceso denegado
+          description: Acceso denegado - rol no autorizado
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error del servidor
 
 components:
-  schemas:
-    Product:
-      type: object
-      properties:
-        id:
-          type: number
-          description: ID del producto
-        title:
-          type: string
-          description: Título del producto
-        description:
-          type: string
-          description: Descripción del producto
-        price:
-          type: number
-          format: float
-          description: Precio del producto
-        thumbnail:
-          type: string
-          description: URL de la imagen del producto
-        code:
-          type: number
-          description: Código del producto
-        stock:
-          type: number
-          description: Cantidad en stock
-        status:
-          type: boolean
-          description: Estado del producto (disponible o no)
-        category:
-          type: string
-          description: Categoría del producto
-
   securitySchemes:
     sessionAuth:
       type: http
       scheme: cookie
-      description: Autenticación basada en sesiones de Express a través de cookies de sesión.
+      description: Autenticación basada en sesión a través de cookies.
     roleAuth:
       type: apiKey
       in: header
-      name: X-Role
-      description: Autorización basada en roles, se incluye en el encabezado X-Role
+      name: x-role
+      description: Verifica que el rol del usuario cumpla con los requerimientos para acceder al endpoint.
