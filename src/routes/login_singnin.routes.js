@@ -93,7 +93,7 @@ routes.get(
         const newUser = await userModel.findOneAndUpdate(filter, update, {
           new: true,
         });
-        req.session.user = { ...newUser, cart: newCart };
+        req.session.user = newUser;
         console.log(req.session.user);
         console.log(req.user);
 
