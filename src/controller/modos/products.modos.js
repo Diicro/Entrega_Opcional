@@ -105,11 +105,11 @@ export const productsModos = {
       console.log("Entra 2");
       console.log(req);
 
-      // const productNormalized = new productDTO(req, id);
+      const productNormalized = new productDTO(req, id);
 
       const sameCode = false;
       console.log("Entra 3");
-
+      console.log(productDTO);
       if (sameCode) {
         console.log("same code");
         req.logger.info("El codigo ya existe");
