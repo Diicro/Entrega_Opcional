@@ -61,7 +61,6 @@ class CollectionManager {
       );
       console.log("Entra siuu");
       console.log(updateProduct);
-      req.logger.info(updateProduct);
 
       return updateProduct;
     } catch (error) {
