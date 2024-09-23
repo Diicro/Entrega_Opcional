@@ -1,50 +1,134 @@
 <div>
-<form id="deleteProduct">
-    <input id="inputDelete" name="pid" placeholder="Id producto a Eliminar">
-    <button type="submit" >Eliminar Producto</button>
-</form>
-<form action="/api/products/products" method="post" enctype="multipart/form-data">
-    <input type="text" id="titleCreate" name="title" required="required"placeholder="title">
-    <input type="text" id="descriptionCreate" name="description" required="required" placeholder="description">
-    <input type="number" id="priceCreate" name="price" required="required" placeholder="Price">
-    <input type="number" id="codeCreate" name="code" required="required" placeholder="code">
-    <input type="number" id="stockCreate" name="stock" required="required" placeholder="stock">
-    <input type="text" id="categoryCreate" name="category" required="required" placeholder="category">
-    <input type="file" name="thumbnail" >
+  <form id="deleteProduct">
+    <input id="inputDelete" name="pid" placeholder="Id producto a Eliminar" />
+    <button type="submit">Eliminar Producto</button>
+  </form>
+  <form
+    action="/api/products/products"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <input
+      type="text"
+      id="titleCreate"
+      name="title"
+      required="required"
+      placeholder="title"
+    />
+    <input
+      type="text"
+      id="descriptionCreate"
+      name="description"
+      required="required"
+      placeholder="description"
+    />
+    <input
+      type="number"
+      id="priceCreate"
+      name="price"
+      required="required"
+      placeholder="Price"
+    />
+    <input
+      type="number"
+      id="codeCreate"
+      name="code"
+      required="required"
+      placeholder="code"
+    />
+    <input
+      type="number"
+      id="stockCreate"
+      name="stock"
+      required="required"
+      placeholder="stock"
+    />
+    <input
+      type="text"
+      id="categoryCreate"
+      name="category"
+      required="required"
+      placeholder="category"
+    />
+    <input type="file" name="thumbnail" />
     <button type="submit">Crear producto</button>
- </form>
-<form action="/api/products/update" method="post">
-    <input type="text" id="id" name="id" required="required" placeholder="id">
-    <input type="text" id="title" name="title" required="required" placeholder="title">
-    <input type="text" id="description" name="description"required="required"  placeholder="description">
-    <input type="number" id="price" name="price" required="required" placeholder="Price"> 
-    <input type="number" id="code" name="code" required="required" placeholder="code">
-    <input type="number" id="stock" name="stock" required="required" placeholder="stock">
-    <input type="text" id="category" name="category" required="required" placeholder="category">
+  </form>
+  <form action="/api/products/update/products" method="post">
+    <input
+      type="text"
+      id="id"
+      name="id"
+      required="required"
+      placeholder="id"
+      enctype="multipart/form-data"
+    />
+    <input
+      type="text"
+      id="title"
+      name="title"
+      required="required"
+      placeholder="title"
+    />
+    <input
+      type="text"
+      id="description"
+      name="description"
+      required="required"
+      placeholder="description"
+    />
+    <input
+      type="number"
+      id="price"
+      name="price"
+      required="required"
+      placeholder="Price"
+    />
+    <input
+      type="number"
+      id="code"
+      name="code"
+      required="required"
+      placeholder="code"
+    />
+    <input
+      type="number"
+      id="stock"
+      name="stock"
+      required="required"
+      placeholder="stock"
+    />
+    <input
+      type="text"
+      id="category"
+      name="category"
+      required="required"
+      placeholder="category"
+    />
+    <input type="file" name="thumbnail" />
     <button type="submit">Editar producto</button>
-</form>
-<form action="/api/users/premium" method="post">
-<input type="email" name="uid"required="required" placeholder="email del usuario">
-<input type="text"name="rol" required="required" placeholder="Rol nuevo para el usuario">
-<button type="submit">Cambiar rol</button>
-</form>
+  </form>
+  <form action="/api/users/premium" method="post">
+    <input
+      type="email"
+      name="uid"
+      required="required"
+      placeholder="email del usuario"
+    />
+    <input
+      type="text"
+      name="rol"
+      required="required"
+      placeholder="Rol nuevo para el usuario"
+    />
+    <button type="submit">Cambiar rol</button>
+  </form>
 
 </div>
 <script>
-        document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
-        event.preventDefault(); 
+  document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
+  event.preventDefault(); const deletePid =
+  document.getElementById("inputDelete").value; deleteProduct(deletePid); });
+  const deleteProduct=async (productId)=>{ await
+  fetch(`/api/products/${productId}`,{ method : "DELETE" }) }
 
-        const deletePid = document.getElementById("inputDelete").value;
-        deleteProduct(deletePid);
-    });
-
-    const deleteProduct=async (productId)=>{
-            await fetch(`/api/products/${productId}`,{
-                method : "DELETE"
-            })
-        
-    }
-
-
-
-    </script>
+</script>
