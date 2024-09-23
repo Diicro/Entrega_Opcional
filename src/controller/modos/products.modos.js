@@ -105,16 +105,15 @@ export const productsModos = {
 
       const products = await productsModel.find({}).lean();
 
-      const sameCode = false;
+      const sameCode = products.some(
+        (elemet) => productNormalized.code === elemet.code
+      );
       console.log(productNormalized);
       if (sameCode) {
-        console.log("same code");
         req.logger.info("El codigo ya existe");
 
         next(new CustomError(errorDicctionary.CODE_EXIST));
       } else {
-        console.log("Entra actu");
-
         const updates = await manager.update(
           filter,
           update,
@@ -122,7 +121,6 @@ export const productsModos = {
           products,
           id
         );
-        console.log("Entra actu x2");
 
         res
           .status(200)

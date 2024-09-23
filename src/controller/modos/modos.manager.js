@@ -59,8 +59,6 @@ class CollectionManager {
         update,
         options
       );
-      console.log("Entra siuu");
-      console.log(updateProduct);
 
       return updateProduct;
     } catch (error) {
