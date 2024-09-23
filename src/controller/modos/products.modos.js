@@ -103,10 +103,11 @@ export const productsModos = {
       console.log("Entra");
       const products = await productsModel.find({}).lean();
       console.log("Entra 2");
+      console.log(req);
 
       // const productNormalized = new productDTO(req, id);
 
-      const sameCode = true;
+      const sameCode = false;
       console.log("Entra 3");
 
       if (sameCode) {
