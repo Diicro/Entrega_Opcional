@@ -105,7 +105,7 @@ export const productsModos = {
       const filter = { id: id };
       const update = req.body;
       const options = { new: true };
-
+      console.log("Entra");
       const products = await productsModel.find({}).lean();
 
       const productNormalized = new productDTO(req.body, id);
@@ -114,9 +114,13 @@ export const productsModos = {
         (elemet) => productNormalized.code === elemet.code
       );
       if (sameCode) {
+        console.log("same code");
         req.logger.info("El codigo ya existe");
+
         next(new CustomError(errorDicctionary.CODE_EXIST));
       } else {
+        console.log("Entra actu");
+
         const updates = await manager.update(
           filter,
           update,
