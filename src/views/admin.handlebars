@@ -53,15 +53,12 @@
     <input type="file" name="thumbnail" />
     <button type="submit">Crear producto</button>
   </form>
-  <form action="/api/products/update/products" method="post">
-    <input
-      type="text"
-      id="id"
-      name="id"
-      required="required"
-      placeholder="id"
-      enctype="multipart/form-data"
-    />
+  <form
+    action="/api/products/update/products"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <input type="text" id="id" name="id" required="required" placeholder="id" />
     <input
       type="text"
       id="title"
@@ -104,7 +101,7 @@
       required="required"
       placeholder="category"
     />
-    <input type="file" name="thumbnail" />
+    <input type="file" name="thumbnailUpdate" />
     <button type="submit">Editar producto</button>
   </form>
   <form action="/api/users/premium" method="post">

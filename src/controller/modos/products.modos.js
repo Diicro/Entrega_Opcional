@@ -58,9 +58,9 @@ export const productsModos = {
   addProduct: async (req, res, next) => {
     try {
       let id;
-
+      console.log(req);
       const products = await productsModel.find({}).lean();
-      products.length < 1 ? (id = -1) : (id = products.length - 1);
+      products.length < 1 ? (id = 0) : (id = products.length);
 
       const productNomalized = new productDTO(req, id);
 
@@ -96,6 +96,8 @@ export const productsModos = {
 
   upDateProduct: async (req, res, next) => {
     try {
+      console.log(req);
+
       const id = +req.body.id;
       const productNormalized = new productDTO(req, id);
 

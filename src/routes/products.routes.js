@@ -15,7 +15,7 @@ routes.post(
 );
 routes.post(
   "/update/products",
-  upload.single("thumbnail"),
+  upload.single("thumbnailUpdate"),
   sessionAuth,
   roleAuth("admin"),
   productsModos.upDateProduct
