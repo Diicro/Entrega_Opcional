@@ -107,12 +107,15 @@ export const productsModos = {
       const options = { new: true };
       console.log("Entra");
       const products = await productsModel.find({}).lean();
+      console.log("Entra 2");
 
       const productNormalized = new productDTO(req.body, id);
 
       const sameCode = products.some(
         (elemet) => productNormalized.code === elemet.code
       );
+      console.log("Entra 3");
+
       if (sameCode) {
         console.log("same code");
         req.logger.info("El codigo ya existe");
@@ -123,7 +126,7 @@ export const productsModos = {
 
         const updates = await manager.update(
           filter,
-          update,
+          productNormalized,
           options,
           products,
           id
