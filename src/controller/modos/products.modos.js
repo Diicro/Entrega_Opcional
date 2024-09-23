@@ -102,14 +102,10 @@ export const productsModos = {
       const filter = { id: id };
       const update = productNormalized;
       const options = { new: true };
-      console.log("Entra");
 
       const products = await productsModel.find({}).lean();
-      console.log("Entra 2");
-      console.log(products);
 
       const sameCode = false;
-      console.log("Entra 3");
       console.log(productNormalized);
       if (sameCode) {
         console.log("same code");
