@@ -111,31 +111,30 @@ export const productsModos = {
 
       const productNormalized = new productDTO(req.body, id);
 
-      const sameCode = products.some(
-        (elemet) => productNormalized.code === elemet.code
-      );
+      // const sameCode = products.some(
+      //   (elemet) => productNormalized.code === elemet.code
+      // );
       console.log("Entra 3");
 
-      if (sameCode) {
-        console.log("same code");
-        req.logger.info("El codigo ya existe");
+      // if (sameCode) {
+      //   console.log("same code");
+      //   req.logger.info("El codigo ya existe");
 
-        next(new CustomError(errorDicctionary.CODE_EXIST));
-      } else {
-        console.log("Entra actu");
+      //   next(new CustomError(errorDicctionary.CODE_EXIST));
+      // } else {
+      console.log("Entra actu");
 
-        const updates = await manager.update(
-          filter,
-          productNormalized,
-          options,
-          products,
-          id
-        );
+      const updates = await manager.update(
+        filter,
+        productNormalized,
+        options,
+        products,
+        id
+      );
 
-        res
-          .status(200)
-          .send(`Actualización de producto: ${updates.title} ha sido exitoso`);
-      }
+      res
+        .status(200)
+        .send(`Actualización de producto: ${updates.title} ha sido exitoso`);
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
       next(new CustomError(errorDicctionary.DATABASE_ERROR));
