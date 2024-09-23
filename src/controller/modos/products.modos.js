@@ -109,7 +109,7 @@ export const productsModos = {
 
       const sameCode = false;
       console.log("Entra 3");
-      console.log(productDTO);
+      console.log(productNormalized);
       if (sameCode) {
         console.log("same code");
         req.logger.info("El codigo ya existe");
