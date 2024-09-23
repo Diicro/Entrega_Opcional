@@ -59,9 +59,9 @@ class CollectionManager {
         update,
         options
       );
+      console.log("Entra siuu");
       console.log(updateProduct);
       req.logger.info(updateProduct);
-      console.log("Entra siuu");
 
       return updateProduct;
     } catch (error) {
