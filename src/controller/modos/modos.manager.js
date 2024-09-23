@@ -59,9 +59,11 @@ class CollectionManager {
         update,
         options
       );
+      console.log(updateProduct);
       req.logger.info(updateProduct);
       products.splice(id, 1, updateProduct);
       fs.writeFileSync(upath, JSON.stringify(products));
+      console.log("Entra siuu");
 
       return updateProduct;
     } catch (error) {
