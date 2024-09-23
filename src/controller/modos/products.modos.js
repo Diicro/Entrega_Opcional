@@ -97,15 +97,16 @@ export const productsModos = {
   upDateProduct: async (req, res, next) => {
     try {
       const id = +req.body.id;
+      const productNormalized = new productDTO(req, id);
+
       const filter = { id: id };
-      const update = req.body;
+      const update = productNormalized;
       const options = { new: true };
       console.log("Entra");
+
       const products = await productsModel.find({}).lean();
       console.log("Entra 2");
-      console.log(req);
-
-      const productNormalized = new productDTO(req, id);
+      console.log(products);
 
       const sameCode = false;
       console.log("Entra 3");
@@ -120,11 +121,12 @@ export const productsModos = {
 
         const updates = await manager.update(
           filter,
-          productNormalized,
+          update,
           options,
           products,
           id
         );
+        console.log("Entra actu x2");
 
         res
           .status(200)
