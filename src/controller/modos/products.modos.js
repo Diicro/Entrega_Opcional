@@ -9,7 +9,7 @@ class productDTO {
     this.title = data.body.title;
     this.description = data.body.description;
     this.price = +data.body.price;
-    this.thumbnail = data.file.filename || "[]";
+    this.thumbnail = data.body.thumbnail || "[]";
     this.code = +data.body.code;
     this.stock = +data.body.stock;
     this.status = true;
