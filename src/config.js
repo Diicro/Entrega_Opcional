@@ -22,7 +22,7 @@ const config = {
           "Esta documentación cubre toda la API habilitada para Fashapets",
       },
     },
-    apis: [path.resolve(__dirname, "./src/docs/**/*.yaml")],
+    apis: [`${this.DIRNAME}/docs/**/*.yaml`],
   },
   SECRET: process.env.SECRET,
   MONGODB_URI:
