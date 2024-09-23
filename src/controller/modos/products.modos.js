@@ -4,18 +4,18 @@ import { errorDicctionary } from "../errorsDictionary.js";
 import CollectionManager from "./modos.manager.js";
 
 class productDTO {
-  constructor(data, file, id, user) {
+  constructor(data, id) {
     this.id = +id;
-    this.title = data.title;
-    this.description = data.description;
-    this.price = +data.price;
-    this.thumbnail = file.filename || "[]";
-    this.code = +data.code;
-    this.stock = +data.stock;
+    this.title = data.body.title;
+    this.description = data.body.description;
+    this.price = +data.body.price;
+    this.thumbnail = data.file.filename || "[]";
+    this.code = +data.body.code;
+    this.stock = +data.body.stock;
     this.status = true;
-    this.category = data.category;
-    this.owner = user.email;
-    this.rol = user.rol;
+    this.category = data.body.category;
+    this.owner = data.session.user.email;
+    this.rol = data.session.user.rol;
   }
 }
 
@@ -62,12 +62,7 @@ export const productsModos = {
       const products = await productsModel.find({}).lean();
       products.length < 1 ? (id = -1) : (id = products.length - 1);
 
-      const productNomalized = new productDTO(
-        req.body,
-        req.file,
-        id + 1,
-        req.session.user
-      );
+      const productNomalized = new productDTO(req, id);
 
       const completeSpace = Object.values(productNomalized).includes(undefined);
       const productseasy = [...products];
@@ -109,32 +104,33 @@ export const productsModos = {
       const products = await productsModel.find({}).lean();
       console.log("Entra 2");
 
-      const productNormalized = new productDTO(req.body, id);
+      const productNormalized = new productDTO(req, id);
 
-      // const sameCode = products.some(
-      //   (elemet) => productNormalized.code === elemet.code
-      // );
+      const sameCode = products.some(
+        (elemet) => productNormalized.code === elemet.code
+      );
       console.log("Entra 3");
 
-      // if (sameCode) {
-      //   console.log("same code");
-      //   req.logger.info("El codigo ya existe");
+      if (sameCode) {
+        console.log("same code");
+        req.logger.info("El codigo ya existe");
 
-      //   next(new CustomError(errorDicctionary.CODE_EXIST));
-      // } else {
-      console.log("Entra actu");
+        next(new CustomError(errorDicctionary.CODE_EXIST));
+      } else {
+        console.log("Entra actu");
 
-      const updates = await manager.update(
-        filter,
-        productNormalized,
-        options,
-        products,
-        id
-      );
+        const updates = await manager.update(
+          filter,
+          productNormalized,
+          options,
+          products,
+          id
+        );
 
-      res
-        .status(200)
-        .send(`Actualización de producto: ${updates.title} ha sido exitoso`);
+        res
+          .status(200)
+          .send(`Actualización de producto: ${updates.title} ha sido exitoso`);
+      }
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
       next(new CustomError(errorDicctionary.DATABASE_ERROR));
