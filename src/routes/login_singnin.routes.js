@@ -136,6 +136,9 @@ routes.post("/changedpassword", async (req, res, next) => {
   try {
     console.log("entra");
     const newPassword = await bcrypt.hash(req.body.newPassword, 10);
+    console.log("entra x2");
+    console.log(req);
+
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };
     console.log("encripta la clave");
