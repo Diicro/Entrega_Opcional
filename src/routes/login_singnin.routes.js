@@ -11,7 +11,7 @@ import {
 import CustomError from "../controller/customError.js";
 import { errorDicctionary } from "../controller/errorsDictionary.js";
 import config from "../config.js";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import { cartModos } from "../controller/modos/cart.modos.js";
 
 const routes = Router();
@@ -135,10 +135,13 @@ routes.post("/verifyemail", async (req, res, next) => {
 routes.post("/changedpassword", async (req, res, next) => {
   try {
     console.log("entra");
-    const newPassword = bcrypt.hashSync(
-      req.body.newPassword,
-      bcrypt.genSaltSync(10)
-    );
+    const newPassword = bcrypt.hash(req.body.newPassword, 10, (error, hash) => {
+      if (error) {
+        next(new CustomError(errorDicctionary.RECORD_CREATION_ERROR));
+      } else {
+        return hash;
+      }
+    });
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };
     console.log("encripta la clave");
@@ -146,7 +149,7 @@ routes.post("/changedpassword", async (req, res, next) => {
     const user = await userModel.findOne(filter).lean();
     console.log("joder");
     if (!bcrypt.compareSync(req.body.newPassword, user.passWord)) {
-      const changedPAssword = await userModel.findOneAndUpdate(filter, update, {
+      await userModel.findOneAndUpdate(filter, update, {
         new: true,
       });
       res.status(200).send(`<h1>Contraseña ha sido cambiada con exito</h1>`);
