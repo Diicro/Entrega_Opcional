@@ -18,7 +18,7 @@ routes.post("/premium", roleAuth(["admin"]), async (req, res, next) => {
       "comprobante de estado de cuenta",
     ].some((keyword) => element.name.includes(keyword))
   );
-  console.log(user.documents);
+
   if (user && update.rol === "user") {
     const userUpdate = await userModel.findOneAndUpdate(filter, update, option);
     res

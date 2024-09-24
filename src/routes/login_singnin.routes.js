@@ -132,14 +132,16 @@ routes.post("/verifyemail", async (req, res, next) => {
       .send({ payload: "se ha enviado un Link a su correo electronico" });
   }
 });
-routes.post("/changedpassword", async (req, res) => {
+routes.post("/changedpassword", async (req, res, next) => {
   try {
+    console.log("entra");
     const newPassword = bcrypt.hashSync(
       req.body.newPassword,
       bcrypt.genSaltSync(10)
     );
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };
+    console.log("encripta la clave");
 
     const user = await userModel.findOne(filter).lean();
     console.log("joder");
@@ -149,10 +151,10 @@ routes.post("/changedpassword", async (req, res) => {
       });
       res.status(200).send(`<h1>Contraseña ha sido cambiada con exito</h1>`);
     } else {
-      throw new CustomError(errorDicctionary.PASSWORD_SAME);
+      next(new CustomError(errorDicctionary.PASSWORD_SAME));
     }
   } catch (error) {
-    throw new CustomError(errorDicctionary.DATABASE_ERROR);
+    next(new CustomError(errorDicctionary.DATABASE_ERROR));
   }
 });
 routes.get("/current", sessionAuth, async (req, res) => {
