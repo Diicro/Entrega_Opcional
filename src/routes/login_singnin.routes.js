@@ -135,13 +135,7 @@ routes.post("/verifyemail", async (req, res, next) => {
 routes.post("/changedpassword", async (req, res, next) => {
   try {
     console.log("entra");
-    const newPassword = bcrypt.hash(req.body.newPassword, 10, (error, hash) => {
-      if (error) {
-        next(new CustomError(errorDicctionary.RECORD_CREATION_ERROR));
-      } else {
-        return hash;
-      }
-    });
+    const newPassword = await bcrypt.hash(req.body.newPassword, 10);
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };
     console.log("encripta la clave");
