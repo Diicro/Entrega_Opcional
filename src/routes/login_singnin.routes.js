@@ -94,8 +94,6 @@ routes.get(
           new: true,
         });
         req.session.user = newUser;
-        console.log(req.session.user);
-        console.log(req.user);
 
         req.session.save((error) => {
           if (error) {
@@ -134,17 +132,13 @@ routes.post("/verifyemail", async (req, res, next) => {
 });
 routes.post("/changedpassword", verifyToken, async (req, res, next) => {
   try {
-    console.log("entra");
     const newPassword = await bcrypt.hash(req.body.newPassword, 10);
-    console.log("entra x2");
-    console.log(req);
 
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };
-    console.log("encripta la clave");
 
     const user = await userModel.findOne(filter).lean();
-    console.log("joder");
+
     if (!bcrypt.compareSync(req.body.newPassword, user.passWord)) {
       await userModel.findOneAndUpdate(filter, update, {
         new: true,

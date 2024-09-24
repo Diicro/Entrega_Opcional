@@ -123,9 +123,8 @@
 </div>
 <script>
   document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
-  event.preventDefault(); const deletePid =
-  document.getElementById("inputDelete").value; deleteProduct(deletePid); });
-  const deleteProduct=async (productId)=>{ await
+  const deletePid =document.getElementById("inputDelete").value;
+  deleteProduct(deletePid); }); const deleteProduct=async (productId)=>{ await
   fetch(`/api/products/${productId}`,{ method : "DELETE" }) }
 
 </script>

@@ -25,7 +25,6 @@ export const verifyToken = (req, res, next) => {
         );
       } else {
         req.user = { email: payload.email, token: token };
-        console.log(req.user);
         next();
       }
     });
