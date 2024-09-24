@@ -132,12 +132,12 @@ routes.post("/verifyemail", async (req, res, next) => {
       .send({ payload: "se ha enviado un Link a su correo electronico" });
   }
 });
-routes.post("/changedpassword", async (req, res, next) => {
+routes.post("/changedpassword", verifyToken, async (req, res, next) => {
   try {
     console.log("entra");
     const newPassword = await bcrypt.hash(req.body.newPassword, 10);
     console.log("entra x2");
-    console.log(req.user);
+    console.log(req);
 
     const filter = { email: req.user.email };
     const update = { passWord: newPassword };

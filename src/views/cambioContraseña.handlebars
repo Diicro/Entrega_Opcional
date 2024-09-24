@@ -1,4 +1,9 @@
-<form action="/api/sessions/changedpassword" method="post">
-<input type="password" name="newPassword" placeholder="Nueva contraseña" required="required">
-<button type="submit">Cambiar contraseña</button>
+<form action="/api/sessions/changedpassword?token={{token}}" method="post">
+  <input
+    type="password"
+    name="newPassword"
+    placeholder="Nueva contraseña"
+    required="required"
+  />
+  <button type="submit">Cambiar contraseña</button>
 </form>

@@ -24,7 +24,7 @@ export const verifyToken = (req, res, next) => {
           `https://entrega-opcional.onrender.com/views/tokeninvalid?error=Token no valido o caducado`
         );
       } else {
-        req.user = payload;
+        req.user = { email: payload.email, token: token };
         console.log(req.user);
         next();
       }

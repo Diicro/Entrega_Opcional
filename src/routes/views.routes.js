@@ -63,7 +63,7 @@ routes.get("/recuperarpassword", (req, res) => {
   res.render("recuperarPassword", {});
 });
 routes.get("/cambiocontrasena", verifyToken, (req, res) => {
-  res.render("cambioContraseña", {});
+  res.render("cambioContraseña", { token: req.user.token });
 });
 routes.get("/tokeninvalid", (req, res) => {
   res.render("tokenInvalid", { error: req.query.error });
