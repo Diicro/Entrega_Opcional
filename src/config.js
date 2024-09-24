@@ -2,13 +2,14 @@ import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
+const __dirname = path.dirname(
+  new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:\/)/, "$1")
+);
 
 const config = {
   PORT: 8080,
   MODE: "dev",
-  DIRNAME: path.dirname(
-    new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:\/)/, "$1")
-  ),
+  DIRNAME: __dirname,
   get UPLOAD_DIR() {
     return `${this.DIRNAME}/uploads`;
   },
@@ -22,7 +23,7 @@ const config = {
           "Esta documentación cubre toda la API habilitada para Fashapets",
       },
     },
-    apis: [`${this.DIRNAME}/docs/**/*.yaml`],
+    apis: [`${__dirname}/docs/**/*.yaml`],
   },
   SECRET: process.env.SECRET,
   MONGODB_URI:
