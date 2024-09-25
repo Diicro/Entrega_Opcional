@@ -144,7 +144,7 @@
   const deleteUsers = async () => { 
     try {
 
-  const response = await fetch(`/api/user/delete`, {
+  const response = await fetch(`/api/users/delete`, {
   method: "DELETE", }); 
   if (response.ok) { console.log("Usuarios eliminados con exito"); }
    else { console.log("Error al eliminar usuarios"); } 
@@ -160,7 +160,7 @@
   const mostrarUser = async () => { 
     try {
 
-  const response = await fetch(`/api/user/userinfo`, {
+  const response = await fetch(`/api/users/userinfo`, {
   method: "GET", }); 
   if (response.ok) { console.log("users"); }
    else { console.log("Error al mostrar los usuarios"); } 
