@@ -33,7 +33,7 @@ routes.get(
           
         })
 
-
+        console.log(arrayUsers)
       res
         .status(200)
         .send({ message: "usuarios base de datos", payload: arrayUsers });
@@ -114,6 +114,8 @@ routes.delete(
       let users = 0;
       dateDb.forEach(async (element) => {
       console.log("entra 2s")
+console.log(element.last_connection)
+console.log(new Date())
 
         const diferenceTime = element.last_connection - new Date();
         console.log(diferenceTime);
