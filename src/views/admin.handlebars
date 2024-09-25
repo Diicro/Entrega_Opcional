@@ -122,16 +122,19 @@
   <form action="/api/users/userinfo" method="get">
     <button type="submit">Mostrar usuarios</button>
   </form>
-  <button onclick="deleteUsers()"></button>
+  <button onclick="deleteUsers()">Eliminar users inactivos</button>
 
 </div>
 <script>
   document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
-  event.preventDefault() const
-  deletePid=document.getElementById("inputDelete").value;
-  deleteProduct(deletePid); }); const deleteProduct=async (productId)=>{ await
-  fetch(`/api/products/${productId}`,{ method : "DELETE" }) }
-  console.log(deleteProduct) const deleteUsers=async()=>{
-  fetch(`/api/user/delete`,{ method: "DELETE" }) }
+  event.preventDefault(); const deletePid =
+  document.getElementById("inputDelete").value; deleteProduct(deletePid); });
+  const deleteProduct=async (productId)=>{ await
+  fetch(`/api/products/${productId}`,{ method : "DELETE" }) } const deleteUsers
+  = async () => { try { const response = await fetch(`/api/user/delete`, {
+  method: "DELETE", }); if (response.ok) { alert("Usuarios eliminados con
+  éxito"); } else { alert("Error al eliminar usuarios"); } } catch (error) {
+  console.error("Error:", error); alert("Ocurrió un error en la solicitud"); }
+  };
 
 </script>
