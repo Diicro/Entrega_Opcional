@@ -28,11 +28,10 @@ routes.get(
       console.log("entra")
       const users = await userModel.find({}).lean();
 
-      const arrayUsers = await Promise.all(
-        users.map(async (element) => {
-          const user = new userDTO(element);
-          return user;
-        }))
+      const arrayUsers =users.map(async (element) => {
+          return new userDTO(element);
+          
+        })
 
 
       res
