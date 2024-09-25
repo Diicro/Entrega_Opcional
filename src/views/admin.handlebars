@@ -119,12 +119,19 @@
     />
     <button type="submit">Cambiar rol</button>
   </form>
+  <form action="/api/users/userinfo" method="get">
+    <button type="submit">Mostrar usuarios</button>
+  </form>
+  <button onclick="deleteUsers()"></button>
 
 </div>
 <script>
   document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
-  const deletePid =document.getElementById("inputDelete").value;
+  event.preventDefault() const
+  deletePid=document.getElementById("inputDelete").value;
   deleteProduct(deletePid); }); const deleteProduct=async (productId)=>{ await
   fetch(`/api/products/${productId}`,{ method : "DELETE" }) }
+  console.log(deleteProduct) const deleteUsers=async()=>{
+  fetch(`/api/user/delete`,{ method: "DELETE" }) }
 
 </script>

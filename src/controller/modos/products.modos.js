@@ -58,7 +58,6 @@ export const productsModos = {
   addProduct: async (req, res, next) => {
     try {
       let id;
-      console.log(req);
       const products = await productsModel.find({}).lean();
       products.length < 1 ? (id = 0) : (id = products.length);
 
@@ -96,8 +95,6 @@ export const productsModos = {
 
   upDateProduct: async (req, res, next) => {
     try {
-      console.log(req);
-
       const id = +req.body.id;
       const productNormalized = new productDTO(req, id);
 
@@ -133,7 +130,7 @@ export const productsModos = {
       next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   },
-  deleteProduct: async (req, res) => {
+  deleteProduct: async (req, res, next) => {
     try {
       const getProducts = await productsModel.find({}).lean();
 
@@ -142,15 +139,25 @@ export const productsModos = {
 
       if (getProducts.length === upgrateArray.length) {
         req.logger.warn("El producto a eliminar no existe");
-        throw new CustomError(errorDicctionary.ID_NOT_FOUND);
+        next(new CustomError(errorDicctionary.ID_NOT_FOUND));
       } else if (req.session.user.rol === "admin") {
         const socketServer = req.app.get("socketServer");
+        const productToDelete = await productsModel.findOne({ id: id }).lean();
+        if (productToDelete.rol === "premium") {
+          transport.sendMail({
+            from: `FachaPets <${config.GMAIL_APP_USER}>`,
+            to: productToDelete.owner,
+            subject: `Producto Eliminado`,
+            hatml: `<h1>Se eliminó tu producto</h1><div>Su producto ${productToDelete.title} fue eliminado por algun admin</div>`,
+          });
+        }
         const deleteProduct = await manager.delete(id, upgrateArray);
         req.logger.info(`Eliminó el producto ${deleteProduct}`);
         res.status(200).send(`Eliminado:${deleteProduct}`);
 
         const products = await productsModel.find({}).lean();
         socketServer.emit("upGradeProducts", products);
+        res.status(200).send("Producto eliminado con exito");
       } else {
         const productToDelete = await productsModel.findOne({ id: id });
         if (productToDelete.owner === req.session.user.email) {
@@ -162,12 +169,12 @@ export const productsModos = {
           const products = await productsModel.find({}).lean();
           socketServer.emit("upGradeProducts", products);
         } else {
-          throw new CustomError(errorDicctionary.AUTHENTICATION);
+          next(new CustomError(errorDicctionary.AUTHENTICATION));
         }
       }
     } catch (error) {
       req.logger.error("Error al acceder a la base datos");
-      throw new CustomError(errorDicctionary.DATABASE_ERROR);
+      next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   },
 };
