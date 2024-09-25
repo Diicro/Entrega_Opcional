@@ -158,14 +158,9 @@
   mostrarUser(); });
 
   const mostrarUser = async () => { 
-    try {
+    
 
-  const response = await fetch(`/api/users/userinfo`, {
-  method: "GET", }); 
-  if (response.ok) { console.log("users"); }
-   else { console.log("Error al mostrar los usuarios"); } 
-   } catch (error) {
-  console.error("Error:", error); console.log("Ocurrió un error en la solicitud"); }
+ window.location.href="https://entrega-opcional.onrender.com/api/users/userinfo"
   };
 
 </script>
