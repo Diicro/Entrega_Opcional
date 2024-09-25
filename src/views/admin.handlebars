@@ -119,22 +119,51 @@
     />
     <button type="submit">Cambiar rol</button>
   </form>
-  <form action="/api/users/userinfo" method="get">
-    <button type="submit">Mostrar usuarios</button>
-  </form>
-  <button onclick="deleteUsers()">Eliminar users inactivos</button>
+   
+  <button id="mostrarUsers" type="submit">Mostrar usuarios</button>
+  
+  <button id="deleteUser" type="submit">Eliminar users inactivos</button>
 
 </div>
 <script>
+
   document.getElementById("deleteProduct").addEventListener("submit",(event)=> {
-  event.preventDefault(); const deletePid =
-  document.getElementById("inputDelete").value; deleteProduct(deletePid); });
+  event.preventDefault(); 
+  const deletePid =document.getElementById("inputDelete").value;
+
+  deleteProduct(deletePid); });
   const deleteProduct=async (productId)=>{ await
-  fetch(`/api/products/${productId}`,{ method : "DELETE" }) } const deleteUsers
-  = async () => { try { const response = await fetch(`/api/user/delete`, {
-  method: "DELETE", }); if (response.ok) { alert("Usuarios eliminados con
-  éxito"); } else { alert("Error al eliminar usuarios"); } } catch (error) {
-  console.error("Error:", error); alert("Ocurrió un error en la solicitud"); }
+  fetch(`/api/products/${productId}`,{ method : "DELETE" }) } 
+  
+
+
+  document.getElementById("deleteUser").addEventListener("submit",(event)=> {
+  event.preventDefault(); 
+  deleteUsers(); });
+
+  const deleteUsers = async () => { 
+    try {
+
+  const response = await fetch(`/api/user/delete`, {
+  method: "DELETE", }); 
+  if (response.ok) { console.log("Usuarios eliminados con exito"); }
+   else { console.log("Error al eliminar usuarios"); } 
+   } catch (error) {
+  console.error("Error:", error);console.log("Ocurrió un error en la solicitud"); }
+  };
+   document.getElementById("mostrarUsers").addEventListener("submit",(event)=> {
+  event.preventDefault(); 
+  mostrarUser(); });
+
+  const mostrarUser = async () => { 
+    try {
+
+  const response = await fetch(`/api/user/userinfo`, {
+  method: "GET", }); 
+  if (response.ok) { console.log("users"); }
+   else { console.log("Error al mostrar los usuarios"); } 
+   } catch (error) {
+  console.error("Error:", error); console.log("Ocurrió un error en la solicitud"); }
   };
 
 </script>
