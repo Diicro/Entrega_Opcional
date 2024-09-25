@@ -23,7 +23,7 @@ class userDTO {
 routes.get(
   "/userinfo",
   sessionAuth,
-  roleAuth(["admin"], async (req, res, next) => {
+  roleAuth(["admin"]), async (req, res, next) => {
     try {
       console.log("entra")
       const users = await userModel.find({}).lean();
@@ -41,7 +41,7 @@ routes.get(
       next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   })
-);
+;
 
 routes.post(
   "/premium",
@@ -106,7 +106,7 @@ routes.post(
 routes.delete(
   "/delete",
   sessionAuth,
-  roleAuth(["admin"], async (req, res, next) => {
+  roleAuth(["admin"]), async (req, res, next) => {
     try {
       console.log("entras")
 
@@ -139,6 +139,6 @@ routes.delete(
       next(new CustomError(errorDicctionary.DATABASE_ERROR));
     }
   })
-);
+;
 
 export default routes;
