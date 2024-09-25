@@ -27,16 +27,13 @@ routes.get(
     try {
       console.log("entra")
       const users = await userModel.find({}).lean();
-      const arrayUsers = [];
-      console.log("entra 2")
 
-      users.forEach(async (element) => {
-        const user = new userDTO(element);
-        arrayUsers.push(user);
-      console.log("entra 3")
+      const arrayUsers = await Promise.all(
+        users.map(async (element) => {
+          const user = new userDTO(element);
+          return user;
+        }))
 
-      });
-      console.log("entra")
 
       res
         .status(200)
