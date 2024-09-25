@@ -137,7 +137,7 @@
   
 
 
-  document.getElementById("deleteUser").addEventListener("submit",(event)=> {
+  document.getElementById("deleteUser").addEventListener("click",(event)=> {
   event.preventDefault(); 
   deleteUsers(); });
 
@@ -151,7 +151,9 @@
    } catch (error) {
   console.error("Error:", error);console.log("Ocurrió un error en la solicitud"); }
   };
-   document.getElementById("mostrarUsers").addEventListener("submit",(event)=> {
+
+
+   document.getElementById("mostrarUsers").addEventListener("click",(event)=> {
   event.preventDefault(); 
   mostrarUser(); });
 
