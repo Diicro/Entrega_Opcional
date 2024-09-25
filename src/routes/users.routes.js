@@ -25,13 +25,19 @@ routes.get(
   sessionAuth,
   roleAuth(["admin"], async (req, res, next) => {
     try {
+      console.log("entra")
       const users = await userModel.find({}).lean();
       const arrayUsers = [];
+      console.log("entra 2")
 
       users.forEach(async (element) => {
         const user = new userDTO(element);
         arrayUsers.push(user);
+      console.log("entra 3")
+
       });
+      console.log("entra")
+
       res
         .status(200)
         .send({ message: "usuarios base de datos", payload: arrayUsers });
@@ -106,12 +112,18 @@ routes.delete(
   sessionAuth,
   roleAuth(["admin"], async (req, res, next) => {
     try {
+      console.log("entras")
+
       const dateDb = await userModel.find({}).lean();
       let users = 0;
       dateDb.forEach(async (element) => {
+      console.log("entra 2s")
+
         const diferenceTime = element.last_connection - new Date();
         console.log(diferenceTime);
         if (diferenceTime / 1800000 > 1) {
+      console.log("entras 3s")
+
           await userModel.deleteOne({ email: element.email });
           transport.sendMail({
             from: `FachaPets <${config.GMAIL_APP_USER}>`,
