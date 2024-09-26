@@ -111,7 +111,8 @@ routes.delete(
       let users = 0;
       dateDb.forEach(async (element) => {
       console.log("entra 2s")
-console.log((element.last_connection).getTime())
+      const last_connectionUser=element.last_connection
+console.log(last_connectionUser.getTime())
 console.log(new Date())
 
         const diferenceTime = element.last_connection - new Date();
