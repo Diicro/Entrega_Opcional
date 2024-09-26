@@ -1,8 +1,10 @@
+import config from "../../config.js";
 import productsModel from "../../dao/models/products.model.js";
 import CustomError from "../customError.js";
 import { errorDicctionary } from "../errorsDictionary.js";
 import { transport } from "../utils.js";
 import CollectionManager from "./modos.manager.js";
+
 
 class productDTO {
   constructor(data, id) {
