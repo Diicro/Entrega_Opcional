@@ -13,7 +13,7 @@ const routes = Router();
 
 class userDTO {
   constructor(user) {
-    this.firsName = user.firsName;
+    this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.email = user.email;
     this.rol = user.rol;
@@ -28,11 +28,10 @@ routes.get(
       console.log("entra")
       const users = await userModel.find({}).lean();
 
-      const arrayUsers =users.map(async (element) => {
-          return new userDTO(element);
-          
-        })
-
+      const arrayUsers =await Promise.all(users.map(async (element) => {
+          const userNormalized= new userDTO(element);
+          return userNormalized
+        }))
         console.log(arrayUsers)
       res
         .status(200)
