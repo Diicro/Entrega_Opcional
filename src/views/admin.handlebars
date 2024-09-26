@@ -1,4 +1,4 @@
-<div>
+<div id="resultado">
   <form id="deleteProduct">
     <input id="inputDelete" name="pid" placeholder="Id producto a Eliminar" />
     <button type="submit">Eliminar Producto</button>
@@ -132,8 +132,17 @@
   const deletePid =document.getElementById("inputDelete").value;
 
   deleteProduct(deletePid); });
-  const deleteProduct=async (productId)=>{ await
-  fetch(`/api/products/${productId}`,{ method : "DELETE" }) } 
+  const deleteProduct=async (productId)=>{
+   const resp=await fetch(`/api/products/${productId}`,{ method : "DELETE" })
+   if(resp.ok){const resDelete=await resp.json()
+    const messageDelete=resp.message
+
+    const h1Delete=document.createElement("h1")
+    h1.textContent=messageDelete
+
+    document.getElementById("resultado").innerHTML=""
+    document.getElementById("resultado").appendChild(h1Delete)
+   } } 
   
 
 
@@ -146,9 +155,14 @@
 
   const response = await fetch(`/api/users/delete`, {
   method: "DELETE", }); 
-  if (response.ok) {const res=await response.json() 
-    console.log(res)
-    return res.message
+  if (response.ok) { const res = await response.json();
+      const message = res.message
+
+      const h1 = document.createElement('h1')
+      h1.textContent = message
+
+      document.getElementById('resultado').innerHTML = ''
+      document.getElementById('resultado').appendChild(h1)
     }
    else { console.log("Error al eliminar usuarios"); } 
    } catch (error) {

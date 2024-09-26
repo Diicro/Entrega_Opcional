@@ -130,7 +130,7 @@ routes.delete(
       });
       res
         .status(200)
-        .json({message:`Se eliminaron: ${users} usuarios por inactividad mayor a 15 min`}
+        .json({message:`Se eliminaron:Los usuarios por inactividad mayor a 15 min y fueron notificados por correo electronico`}
           
         );
     } catch (error) {

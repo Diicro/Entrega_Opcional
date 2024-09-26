@@ -151,23 +151,23 @@ export const productsModos = {
             from: `FachaPets <${config.GMAIL_APP_USER}>`,
             to: productToDelete.owner,
             subject: `Producto Eliminado`,
-            hatml: `<h1>Se eliminó tu producto</h1><div>Su producto ${productToDelete.title} fue eliminado por algun admin</div>`,
+            html: `<h1>Se eliminó tu producto</h1><div>Su producto ${productToDelete.title} fue eliminado por algun admin</div>`,
           });
         }
         const deleteProduct = await manager.delete(id, upgrateArray);
         req.logger.info(`Eliminó el producto ${deleteProduct}`);
-        res.status(200).send(`Eliminado:${deleteProduct}`);
-
         const products = await productsModel.find({}).lean();
         socketServer.emit("upGradeProducts", products);
-        res.status(200).send("Producto eliminado con exito");
+
+        res.status(200).json({message:`Eliminado:${deleteProduct}`});
       } else {
         const productToDelete = await productsModel.findOne({ id: id });
         if (productToDelete.owner === req.session.user.email) {
           const socketServer = req.app.get("socketServer");
           const deleteProduct = await manager.delete(id, upgrateArray);
           req.logger.info(`Eliminó el producto ${deleteProduct}`);
-          res.status(200).send(`Eliminado:${deleteProduct}`);
+          res.status(200).json({message:`Eliminado:${deleteProduct}`});
+
 
           const products = await productsModel.find({}).lean();
           socketServer.emit("upGradeProducts", products);
