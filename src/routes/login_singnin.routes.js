@@ -60,7 +60,7 @@ routes.post("/pplogin", passport.authenticate("login"), async (req, res) => {
         await userModel.findOneAndUpdate(
           { email: req.session.user.email },
           {
-            last_connection: new Date().toString(),
+            last_connection: new Date(),
           },
           { new: true }
         );
@@ -89,7 +89,7 @@ routes.get(
       } else {
         const newCart = await cartModos.createCart();
         const filter = { email: req.session.user.email };
-        const update = { cart: newCart };
+        const update = { cart: newCart,last_connection:new Date()};
         const newUser = await userModel.findOneAndUpdate(filter, update, {
           new: true,
         });

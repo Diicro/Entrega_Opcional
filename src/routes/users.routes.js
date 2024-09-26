@@ -25,14 +25,12 @@ routes.get(
   sessionAuth,
   roleAuth(["admin"]), async (req, res, next) => {
     try {
-      console.log("entra")
       const users = await userModel.find({}).lean();
 
       const arrayUsers =await Promise.all(users.map(async (element) => {
           const userNormalized= new userDTO(element);
           return userNormalized
         }))
-        console.log(arrayUsers)
       res
         .status(200)
         .send({ message: "usuarios base de datos", payload: arrayUsers });
