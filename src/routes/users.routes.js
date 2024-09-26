@@ -114,16 +114,16 @@ routes.delete(
       const last_connectionUser=Date.parse(element.last_connection)
 
         const diferenceTime = new Date() - last_connectionUser ;
-        if (diferenceTime / 900000 > 1) {
-      console.log(diferenceTime/900000)
+        if (diferenceTime / 600000 > 1) {
+      console.log(diferenceTime/600000)
 
           transport.sendMail({
             from: `FachaPets <${config.GMAIL_APP_USER}>`,
             to: element.email,
             subject: `Cuenta Eliminada`,
-            hatml: `<h1>Aviso Cuenta eliminada</h1><div>Su cuenta ha sido eliminada debido a la inactividad,gracias por elegirnos.</div>`,
+            html: `<h1>Aviso Cuenta eliminada</h1><div>Su cuenta ha sido eliminada debido a la inactividad,gracias por elegirnos.</div>`,
           });
-          
+
           await userModel.deleteOne({ email: element.email });
           users++;
         }
