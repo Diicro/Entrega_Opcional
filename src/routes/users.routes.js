@@ -106,21 +106,15 @@ routes.delete(
   sessionAuth,
   roleAuth(["admin"]), async (req, res, next) => {
     try {
-      console.log("entras")
-
+ 
       const dateDb = await userModel.find({}).lean();
       let users = 0;
+
       dateDb.forEach(async (element) => {
-      console.log("entra 2s")
       const last_connectionUser=Date.parse(element.last_connection)
-      const actualDate=Date.parse(new Date)
-console.log(last_connectionUser)
-console.log(actualDate)
 
         const diferenceTime = new Date() - last_connectionUser ;
-        console.log(diferenceTime);
         if (diferenceTime / 900000 > 1) {
-
       console.log(diferenceTime/900000)
 
           transport.sendMail({
@@ -129,6 +123,7 @@ console.log(actualDate)
             subject: `Cuenta Eliminada`,
             hatml: `<h1>Aviso Cuenta eliminada</h1><div>Su cuenta ha sido eliminada debido a la inactividad,gracias por elegirnos.</div>`,
           });
+          
           await userModel.deleteOne({ email: element.email });
           users++;
         }
