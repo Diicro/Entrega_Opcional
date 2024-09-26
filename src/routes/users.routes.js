@@ -116,7 +116,7 @@ routes.delete(
 console.log(last_connectionUser)
 console.log(actualDate)
 
-        const diferenceTime = last_connectionUser - new Date();
+        const diferenceTime = new Date() - last_connectionUser ;
         console.log(diferenceTime);
         if (diferenceTime / 1800000 > 1) {
       console.log("entras 3s")
