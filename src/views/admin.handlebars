@@ -146,7 +146,8 @@
 
   const response = await fetch(`/api/users/delete`, {
   method: "DELETE", }); 
-  if (response.ok) { console.log("Usuarios eliminados con exito"); }
+  if (response.ok) { console.log(response.json())
+  console.log(response) }
    else { console.log("Error al eliminar usuarios"); } 
    } catch (error) {
   console.error("Error:", error);console.log("Ocurrió un error en la solicitud"); }
