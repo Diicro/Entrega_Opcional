@@ -8,6 +8,7 @@ import {
   transport,
   upload,
 } from "../controller/utils.js";
+import config from "../config.js";
 
 const routes = Router();
 
