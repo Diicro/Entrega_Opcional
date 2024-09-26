@@ -148,7 +148,7 @@
   method: "DELETE", }); 
   if (response.ok) {const res=await response.json() 
     console.log(res)
-    return res
+    return res.message
     }
    else { console.log("Error al eliminar usuarios"); } 
    } catch (error) {
